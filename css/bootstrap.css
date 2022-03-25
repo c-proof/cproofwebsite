@@ -1399,6 +1399,17 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
+
+.containerjp {
+ 
+  max-width: calc(100% + 2em);
+  margin-left: -1em;
+  margin-right: -1em;
+  position: relative;
+  left: 0px;
+  overflow-x: hidden; 
+}
+
 @media (min-width: 768px) {
   .container {
     width: 750px;
@@ -6336,3 +6347,148 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+/* jpnote: home page css */
+
+.home h6{
+  font-size:17px;
+  color:white; 
+  padding-left: 160px !important ;
+}
+
+/* end of home page css */
+/* jpnote: people page css */
+.people img {  
+  float: left;
+}
+.people p {
+  overflow: hidden;
+padding:0px; 
+ margin:0px; 
+}
+
+.people .sl {
+overflow: hidden;
+min-height: 130px;
+}
+
+.people .stu {
+overflow: hidden;
+min-height: 150px;
+}
+
+.people .staf {
+overflow: hidden;
+min-height: 140px;
+}
+
+.people * {
+box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.people .columnl {
+float: left;
+width: 50%;
+padding: 10px;
+/* height: 300px; /* Should be removed. Only for demonstration */
+border-right: 1px solid rgb(228, 226, 226);
+}
+
+.people .columnr {
+float: left;
+width: 50%;
+padding: 10px;
+/* height: 300px; /* Should be removed. Only for demonstration */
+
+}
+
+/* Clear floats after the columns */
+.people .row:after {
+content: "";
+display: table;
+clear: both;
+}
+
+.people br {
+content: "";
+margin: 2em;
+display: block;
+font-size: 24%;
+}
+
+.people .jptest {
+
+width:100%
+}
+
+.people * {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.people .column {
+  background-color:rgb(250, 250, 250);
+  float: left;
+  width: 50%;
+  height: 1080px;
+  padding: 20px;
+  
+}
+
+/* Clear floats after the columns */
+.people .row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/*end of people page css */
+
+/* jpnote: about page css*/
+.about html,body
+{
+    overflow-x: hidden; 
+}
+/* end of about page css */
+
+/* jpnote: platforms page css */
+
+.platforms * {
+  box-sizing: border-box;
+}
+
+.platforms .column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  
+}
+.platforms .row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.platforms .img {
+  width: 700px;
+  padding-left: 30px;
+}
+ 
+.platforms .box {
+  width: 100%;
+  height: 150px;
+  padding-bottom: 40px;
+  text-align: center;
+}
+
+.platforms p { 
+  margin-top: 0px; 
+  white-space: pre-line;
+  }
+  
+.platforms tr>td {
+    padding-bottom: 1em;
+  }
+
+/* end of platforms page css */

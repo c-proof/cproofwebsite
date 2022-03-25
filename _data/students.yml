@@ -1,0 +1,37 @@
+#students 
+
+- name: Khush Jhugroo
+  role: Postdoctoral fellow in coastal physical oceanography at the Hakai Institute and UBC
+  img: img/KhushJhugroo.jpg
+  org: 
+  github: 
+  title: 
+  bio: Investigating shelf sea processes and coast-to-open-ocean connectivity
+  url: 
+  groups: 
+  visible: true
+  type: 
+
+- name: Bernie Yang
+  role: Postdoctoral fellow with C-PROOF at UVic
+  img: img/BernieYang.jpg
+  org: 
+  github: 
+  title:  
+  bio: Investigating how offshore ocean dynamics affect ocean productivity and salmon migration paths in the northeast Pacific Ocean
+  url: 
+  groups: 
+  visible: true
+  type: 
+
+- name: Julia Putko
+  role: Co-op Student at UVic
+  img: img/JuliaPutko.jpg
+  org: 
+  github: 
+  title: 
+  bio: Working to make glider data more accessible on the C-PROOF website.                                                         
+  url: 
+  groups: 
+  visible: true
+  type: 

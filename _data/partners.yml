@@ -5,30 +5,35 @@
   url: http://www.innovation.ca
   type: funder
   visible: true
+  size: false
 
 - name: British Columbia Knowldge Development Fund
   img: img/logos/BCKDF.png
-  url: https://www2.gov.bc.ca/gov/content/governments/about-the-bc-government/technology-innovation/bckdf
+  url: https://www2.gov.bc.ca/gov/content/governments/technology-innovation/bckdf
   type: funder
   visible: true
+  size: false
 
 - name: Fisheries and Oceans Canada
   img: img/logos/DFO.png
   url: http://www.dfo-mpo.gc.ca/index-eng.htm
   type: funder
   visible: true
+  size: true
 
 - name: Hakai Institute
   img: img/logos/Hakai.png
   url: http://hakai.org
   type: funder
   visible: true
+  size: false
 
 - name: NSERC-CRSNG
   img: img/logos/NSERC-CRSNG.png
   url: http://www.nserc-crsng.gc.ca
   type: funder
   visible: true
+  size: false
 
 
 - name: Ocean Networks Canada
@@ -36,30 +41,35 @@
   url: http://www.oceannetworks.ca
   type: funder
   visible: true
+  size: false
 
 - name: Axys Technologies
   img: img/logos/AXYS.jpg
-  url: http://axystechnologies.com
+  url: https://axystech.wpengine.com/
   type: industry
   visible: true
+  size: false
 
 - name: Teledyne-Webb Research
   img: img/logos/teledyne.svg
   url: http://www.teledynemarine.com/webb-research/
   type: industry
   visible: true
+  size: false
 
 - name: Alseamar Alcen
   img: img/logos/alseamar.svg
   url: https://www.alseamar-alcen.com
   type: industry
   visible: true
+  size: false
 
 - name: Rockland Scientific
   img: img/logos/Rockland.png
   url: https://rocklandscientific.com
   type: industry
   visible: true
+  size: false
 
 - name: ASL Environmental Sciences
   img: img/logos/ASL.png
@@ -67,3 +77,32 @@
   type: industry
   visible: true
   contact: Todd Mudge
+  size: false
+
+- name: Hakai Institute
+  img: img/logos/Hakai.png
+  url: http://hakai.org
+  type: opfunder1
+  visible: true
+  size: false
+
+- name: Fisheries and Oceans Canada
+  img: img/logos/DFO.png
+  url: http://www.dfo-mpo.gc.ca/index-eng.htm
+  type: opfunder1
+  visible: true
+  size: true
+
+- name: University of Victoria
+  img: img/UVic_vert_4c_cmyk.jpg
+  url: https://www.uvic.ca/
+  type: opfunder2
+  visible: true
+  size: false
+
+- name: University of British Columbia 
+  img: img/logos/UBC.png
+  url: https://www.ubc.ca/
+  type: opfunder2
+  visible: true
+  size: false

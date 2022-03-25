@@ -5,11 +5,11 @@ author:     Jody Klymak
 tags: 		  deployments gliders
 subtitle:  	
 category:   deployments
-header-img: "img/Calvert19Jun/HakaiMikeCrop.jpg"
+header-img: "img/Calvert19Jun/HakaiMike.jpg"
 ---
 <!-- Start Writing Below in Markdown -->
 
-C-PROOF partners [Haiaki Institute](https://hakai.org) worked with us to create this great video documenting our glider deployments this summer.  
+C-PROOF partners [Hakai Institute](https://hakai.org) worked with us to create this great video documenting our glider deployments this summer.  
 
 [Gliding into the deep](https://www.hakai.org/blog/gliding-into-the-deep/)
 

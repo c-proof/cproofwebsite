@@ -10,26 +10,29 @@
   url: http://web.uvic.ca/~jklymak/
   groups: gliders floats mooring
   visible: true
+  type: sciencelead
 
 - name: Brad Buckham
   role: Co-Investigator; Lead wave and offshore wind observations
-  img: img/bbuckham.jpg
+  img: img/BradBuckham.jpg
   org: University of Victoria
   github:
   title:  Associate Professor in Ocean Engineering; Director West Coast Wave Initiative
-  bio: Specializes in offshore renewable energy, with a particular focus on characterizing the British Columbia wave energy supply.
+  bio: Specializes in offshore renewable energy, with a focus on the British Columbia wave energy supply.
   url: https://www.uvic.ca/research/projects/wcwi/index.php
   groups: energy
   visible: true
+  type: investigator 
 
 - name: Roberta Hamme
   role: Co-Investigator; Lead profiling floats
   img: https://web.uvic.ca/~rhamme/rchpic4.jpg
   org: University of Victotria
   title: Associate Professor in Marine Chemistry,  Tier-II CRC in Ocean Carbon Dynamics
-  bio: Research works towards understanding what drives the cycles of gases like carbon dioxide and oxygen in the ocean.
+  bio: Studies the cycles of gases like carbon dioxide and oxygen in the ocean. 
   url: https://web.uvic.ca/~rhamme/
   visible: true
+  type: sciencelead
 
 - name: Stephanie Waterman
   role: Co-Investigator; Lead gliders
@@ -38,7 +41,8 @@
   title: Assistant Professor Physical Oceanography, Tier-II CRC in Ocean Turbulence
   url: http://www.stephaniewaterman.ca/Work/
   visible: true
-  bio: Ocean turbulence & ocean mixing from both observational & theoretical perspectives.
+  bio: Studies ocean turbulence and mixing from observational and theoretical perspectives.
+  type: sciencelead
 
 - name: Tetjana Ross
   role: Co-Investigator
@@ -46,7 +50,8 @@
   visible: true
   title: Research Scientist
   org: Institute of Ocean Sciences
-  bio: Novel techniques to observe the ocean and understand its dynamics.
+  bio: Uses novel techniques to observe the ocean and understand its dynamics.                                               
+  type: sciencelead
 
 - name: Curran Crawford
   role: Co-Investigator
@@ -56,6 +61,7 @@
   url: https://ssdl.uvic.ca
   bio: Applies advanced modelling tools to simulate energy systems.
   visible: true
+  type: investigator 
 
 - name: Philippe Tortell
   url: https://www.eoas.ubc.ca/people/philippetortell
@@ -63,17 +69,19 @@
   img: img/tortell.jpg
   title: Professor of Biological Oceanography
   org: University of British Columbia
-  bio: A sea-going oceanographer with broad interests in marine biogeochemical cycles.
+  bio: Studies marine biogeochemical cycles with a focus on primary productivity and climate active gases.
   visible: true
+  type: investigator 
 
 - name: Diana Varela
   visible: true
-  img: img/varela.jpg
-  url: https://varelalab.wordpress.com
+  img: img/diana-varela.jpg
+  url: https://onlineacademiccommunity.uvic.ca/varelalab/dr-diana-e-varela/
   title: Professor, Phytoplankton Physiology
   org: University of Victoria
   role: Co-Investigator
-  bio: Seeks to understand variations in marine primary productivity and cycling of nutrient elements in the oceans.
+  bio: Studies variations in marine primary productivity and cycling of nutrient elements in the oceans.
+  type: investigator 
 
 - name: Maycira Costa
   visible: true
@@ -81,8 +89,9 @@
   title: Professor, Ocean Optics
   org: University of Victoria
   role: Co-Investigator
-  bio: Invstigates the interaction of light eenergy with organic and inorganic material in ocean waters
+  bio: Investigates the interaction of light energy with organic and inorganic material in ocean waters.
   img: img/costa.jpg
+  type: investigator 
 
 - name: Roger Francois
   visible: true
@@ -91,4 +100,65 @@
   org: University of British Columbia
   img: img/francois.jpg
   url: https://www.eoas.ubc.ca/people/rogerfrancois
-  bio: Water column radiochemistry to constrain abyssal circulation and scavenging.
+  bio: Studies water column radiochemistry and application of geochemistry to problems of paleoceanography.
+  type: investigator 
+
+- name: James Pegg
+  visible: true
+  role: Marine Technician
+  title: Institute of Ocean Sciences
+  org: 
+  img: img/James.jpg
+  url: 
+  bio: Lead technician for C-PROOF, James comes from the Pacific Biological Station and specializes in submersible vehicles.
+  type: cproofstaff
+
+- name: Hayley Dosser
+  visible: true
+  role: Physical Scientist
+  title: Institute of Ocean Sciences
+  org: 
+  img: img/HayleyDosser.jpg
+  url: 
+  bio: Hayley works with data management and sensors, as well as mission planning and piloting.
+  type: cproofstaff
+
+- name: Chris Payne
+  visible: true
+  role: Sea-going Technician
+  title: University of British Columbia
+  org: 
+  img: img/chris-payne2.jpg
+  url: 
+  bio: Chris is the lead technician for the UBC ocean glider, and is an expert in mission planning and piloting.
+  type: cproofstaff
+
+- name: Jennifer Jackson
+  visible: true
+  role: Physical Oceanographer
+  title: Research Scientist
+  org: 
+  img: img/JenniferJackson.jpg
+  url: 
+  bio: Studies the physical oceanography of the coastal waters of British Columbia.
+  type: hakai
+
+- name: Wiley Evans
+  visible: true
+  role: Chemical Oceanographer
+  title: Research Scientist
+  org: 
+  img: img/Wiley.jpg
+  url: 
+  bio: Focuses on the marine carbonate system and ocean acidification in coastal ocean settings.
+  type: hakai
+
+- name: Chris Mackenzie
+  visible: true
+  role: Hakai Institute Research Technician 
+  title: 
+  org: 
+  img: img/ChrisMackenzie.jpg
+  url: 
+  bio: Chris works with C-PROOF ocean gliders from a remote Hakai Institute field station on Calvert Island.
+  type: cproofstaff

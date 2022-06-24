@@ -15,11 +15,11 @@ crossorigin=""></script>
 
 
 
-<body class="home"> 
+<body class="home">
 
 <p>The Canadian-Pacific Robotic Ocean Observing Facility was initiated with CFI/BCKDF funding to build ocean observing
-   capacity off the British Columbia coast. It operates a fleet of autonomous gliders, floats, and moorings providing 
-   ocean scientists with long-term monitoring of the ocean at the small scales important to resolve upper ocean physical 
+   capacity off the British Columbia coast. It operates a fleet of autonomous gliders, floats, and moorings providing
+   ocean scientists with long-term monitoring of the ocean at the small scales important to resolve upper ocean physical
    and biological properties.</p>
 
 <h3> Deployments </h3>
@@ -44,7 +44,9 @@ C-PROOF glider deployments are under way! Check out our <a href='/deployments/'>
 
 <div id="mapfront" style="width: 100%; height: 400px;"></div>
 
-<script src="js/map.js"></script>
+<a href="/deployments/">
+  <script src="js/map.js"></script>
+</a>
 
 <h2>Partners</h2>
 
@@ -55,15 +57,15 @@ C-PROOF glider deployments are under way! Check out our <a href='/deployments/'>
 
     {% for partner in site.data.partners %}{% if partner.type == "opfunder2" %}{% if partner.visible == true %}
     <td><a href="{{ partner.url }}"><img src="{{ partner.img }}" alt="{{ partner.name }}" border="3"  width="80" /></a> </td>
-    
+
 
     {% if forloop.index == 3 %}
       </tr>
       <tr>
     {% endif %}
   {% endif %}{% endif %}{% endfor %}
-  
-  
+
+
     {% for partner in site.data.partners %}{% if partner.type == "opfunder1" %}{% if partner.visible == true %} {% if partner.size == false %}
     <td><a href="{{ partner.url }}"><img src="{{ partner.img }}" alt="{{ partner.name }}" border="3"  width="120" /></a> </td>
     {% endif %}
@@ -75,13 +77,13 @@ C-PROOF glider deployments are under way! Check out our <a href='/deployments/'>
       <tr>
     {% endif %}
   {% endif %}{% endif %}{% endfor %}
-  
+
 </tr>
 </table>
 
 <h3>Funding</h3>
 
-<table style="width:100%"> 
+<table style="width:100%">
   <tr>
   {% for partner in site.data.partners %}{% if partner.type == "funder" %}{% if partner.visible == true %}{% if partner.size == false %}
     <td><a href="{{ partner.url }}"><img src="{{ partner.img }}" alt="{{ partner.name }}" border="3"  width="120" /></a> </td>
@@ -99,7 +101,7 @@ C-PROOF glider deployments are under way! Check out our <a href='/deployments/'>
 </table>
 
 <h3>Industry</h3>
-<table style="width:100%"> 
+<table style="width:100%">
 <tr>
 {% for partner in site.data.partners %}{% if partner.type == "industry" %}{% if partner.visible == true %}
   <td><a href="{{ partner.url }}"><img src="{{ partner.img }}" alt="{{ partner.name }}" border="3"  width="130" /></a> </td>

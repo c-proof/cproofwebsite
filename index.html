@@ -27,14 +27,16 @@ crossorigin=""></script>
 <script>
         // Adjust iframe height to fit content
         const iframe = document.getElementById('totals-frame');
-        
+
         iframe.onload = function() {
             // Access the height of the content inside the iframe
             iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
         };
 </script>
 
-<p>Our <a href='/deployments/'>Deployments Page</a> has a list of glider deployments and access to glider data; see <a href='/platforms/'>Platforms Page</a> for information about the Argo floats and how to access data:</p>
+<p>Our <a href='/deployments/'>Deployments Page</a> has a list of glider deployments and access to glider data;  more information on downloading glider data is also at the <a href='/data/'>Data</a> page.  See <a href='/platforms/'>Platforms Page</a> for information about the Argo floats and how to access their data:</p>
+
+<p>See the <a href='/observatory/'>Observatory</a> page for a description of deployment location and line names.</p>
 
 <div id="mapfront" style="width: 100%; height: 400px;"></div>
 

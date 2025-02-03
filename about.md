@@ -21,6 +21,23 @@ The Canadian Pacific Robotic Ocean Observing Facility uses state of the art tech
 
 C-PROOF deploys [autonomous ocean gliders and floats](./platforms/) to explore and monitor the ocean. These instruments are equipped with revolutionary new sensors capable of tracking life, measuring ocean nutrients, and quantifying ocean turbulence. We also plan to deploy mooring arrays with innovative instrumentation. Our data is publicly available and is shared with a wide array of partners and user groups for the benefit of Canadians; the data is used to inform ecosystem management, climate predictions, and weather forecasts. C-PROOF helps provide the information we need to make better plans for the future, and helps drive development of the technological solutions needed to enable those plans.
 
+### Equity, Diversity, Inclusion, and Accessibility Statement
+
+The members of the C-PROOF project embrace diversity and are committed to fostering a culture of belonging that enhances our ability to serve the global ocean science community. Achieving a comprehensive understanding of the ocean and its systems requires a diversity of perspectives and an equitable, inclusive approach. By removing barriers to participation, we collectively advance knowledge and create a more just and innovative scientific community.
+
+Recognizing this, we actively work to integrate equity, diversity, inclusion, and accessibility (EDIA) into our programs, decision-making, and organizational culture. We value and encourage Indigenous Peoples, racialized persons, women, persons with disabilities, and individuals of diverse sexual and gender identities to fully participate in C-PROOF. Diverse perspectives, experiences, and expertise are essential to strengthening our mission.
+
+Our commitments include:
+
+- Building an inclusive environment – We strive to create a respectful, welcoming space where all individuals feel valued and supported in their work. Respect includes listening actively, engaging thoughtfully, and ensuring all voices are heard.
+- Increasing equitable access – We work to make our research and data openly accessible, removing systemic barriers to participation. This includes developing community-friendly, scalable data-sharing tools and supporting Indigenous-led research initiatives with our partners.
+- Sustaining meaningful relationships – We acknowledge and respect the Indigenous Peoples whose territories span the west coast of British Columbia, including the Homalko, Heiltsuk, Ts'msyen, Maa-nulth, Musqueam, Squamish, and Haida Nations, among many others. Their deep relationships with the land and ocean continue to this day, and we seek to foster lasting, reciprocal partnerships that uphold Indigenous knowledge and stewardship.
+- Fostering accountability and continuous learning – This is a living commitment. We pledge to revisit and refine our approach regularly, ensuring we continue to grow and respond to the evolving needs of our community. We encourage all team members to participate in anti-discrimination and equity training.
+- Supporting well-being and peer mentorship – We recognize that impactful research requires a strong foundation of personal and professional support. We encourage self-care, value peer mentorship, and emphasize collective success.
+- Practicing environmental and scientific integrity – We uphold the highest standards of ethical research, transparency, and respect for the environments in which we work. Our commitment to sustainability extends to minimizing the environmental impact of our research practices.
+
+Finally, we recognize that learning and growth are ongoing. We acknowledge that mistakes will happen, and we treat these as opportunities to reflect, improve, and strengthen our shared commitment to equity, diversity, and inclusion.
+
 
 ### [In The News](/search/)
 

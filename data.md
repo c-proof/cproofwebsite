@@ -46,7 +46,7 @@ function copyToClipboard(element) {
 
 </style>
 
-# Downloading Glider Data
+# Downloading the glider data
 
 ## Get glider data:
 

@@ -1,0 +1,16 @@
+---
+layout:     post
+title:      C-PROOF represented at Ocean Sciences Meeting 2026
+author:     Jody Klymak
+tags: 		meetings
+subtitle:  	C-PROOF represented at Ocean Sciences Meeting 2026
+social_excerpt : "Giuliana Berden and Lauryn Talbot presented C-PROOF observations at the Ocean Sciences Meeting 2026 in Glasgow, Scotland!"
+category:   meetings_publications
+header-img: "img/ControlRoomMar19.jpg"
+image:      "/img/2026/OSM26.png"
+---
+<!-- Start Writing Below in Markdown -->
+
+![Berden showing poster at OSM 2026](/img/2026/OSM26.png)
+
+We had an excellent time at the [Ocean Sciences Meeting 2026](https://www.agu.org/ocean-sciences-meeting) in Glasgow, Scotland, where C-PROOF was well represented by posters and talks.  Giuliana Berden presented a poster on the C-PROOF observations of a California Undercurrent Eddy ("Cuddy"), and Lauryn Talbot presented a talk on the C-PROOF observations about the variability along LineP in the ocean spice section.  We had a great time catching up with old friends and making new ones, and we are looking forward to the next OSM in 2028 in Vancouver B.C.!

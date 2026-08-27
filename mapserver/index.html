@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CPROOF WMS Map Services</title>
+<style>
+  body { font-family: sans-serif; max-width: 900px; margin: 2em auto; padding: 0 1em; color: #222; }
+  h1 { font-size: 1.4em; }
+  h2 { font-size: 1.1em; margin-top: 2em; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1em; }
+  th { text-align: left; border-bottom: 2px solid #999; padding: 0.4em 0.6em; }
+  td { padding: 0.4em 0.6em; border-bottom: 1px solid #ddd; vertical-align: top; }
+  code { font-size: 0.9em; background: #f4f4f4; padding: 0.1em 0.3em; border-radius: 3px; }
+  a { color: #1a5276; }
+  .note { font-size: 0.85em; color: #555; margin-top: 1.5em; }
+  .recommended { background: #eaf4fb; border: 1px solid #aed6f1; border-radius: 6px; padding: 1em 1.2em; margin: 1em 0 2em 0; }
+  .recommended h2 { margin-top: 0.2em; color: #1a5276; }
+  .appendix { color: #666; }
+  img.preview { display: block; margin-top: 0.4em; max-width: 180px; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<h1>CPROOF WMS Map Services</h1>
+<p>Each endpoint is a WMS service. Enter the URL in a WMS client (SFMC, Glimpse, QGIS) as the service endpoint.</p>
+
+<!-- ── Recommended layer ─────────────────────────────────────────────────── -->
+<div class="recommended">
+<h2>&#9733; Recommended: BCCOG</h2>
+<p>A single Cloud-Optimized GeoTIFF covering 45–56°N, 145.5–122.2°W, merging GEBCO 2025, the BC 3 arcsec coastal DEM, and high-resolution inshore DEMs. Depths shallower than 50 m are highlighted in amber/orange/red as a shoal warning.</p>
+
+<table>
+  <tr>
+    <th>Endpoint</th>
+    <th>Layer name</th>
+    <th>Extent (W, E, S, N)</th>
+    <th>Preview</th>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCCOG?SERVICE=WMS&REQUEST=GetCapabilities"><code>https://cproof.uvic.ca/wms/BCCOG</code></a></td>
+    <td><code>BCBathy</code></td>
+    <td>-145.5, -122.2, 45.0, 56.0</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCCOG?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCBathy&SRS=EPSG:4326&BBOX=-145.5,45.0,-122.2,56.0&WIDTH=395&HEIGHT=185&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCCOG?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCBathy&SRS=EPSG:4326&BBOX=-145.5,45.0,-122.2,56.0&WIDTH=395&HEIGHT=185&FORMAT=image/png&STYLES=" alt="BCCOG preview"></a></td>
+  </tr>
+</table>
+
+<h2 style="margin-top:1.2em;">Adding to clients</h2>
+<p><strong>Glimpse:</strong> Mission Layer → Add New Custom Layer → Add WMS layer service → enter <code>https://cproof.uvic.ca/wms/BCCOG</code> → select <code>BCBathy</code> → Valid.</p>
+<p><strong>SFMC:</strong> Login name (upper right) → Map Settings → Map Layer Settings → Create Layer Setting → enter <code>https://cproof.uvic.ca/wms/BCCOG</code>, layer <code>BCBathy</code>, format PNG, WMS version 1.3.</p>
+</div>
+
+<!-- ── KML Contours ───────────────────────────────────────────────────────── -->
+<div class="recommended">
+<h2>&#9733; Recommended: BC Contours KML</h2>
+<p>A single KML covering the full BC coast (45–56°N, 145.5–122.2°W) with contours
+at 50, 100, 200, and 1000 m. Each depth is a separate folder — load the file once
+and toggle levels in your app. Full-resolution detail is preserved at Barkley Sound
+and Hakai Pass; elsewhere contours are simplified to ~300 m for a compact file size.</p>
+<p><a href="https://cproof.uvic.ca/mapserver/kmls/BCContours.kml"><strong>BCContours.kml</strong></a></p>
+<h2 style="margin-top:1.2em;">Adding to clients</h2>
+<p>Download the KML file to your device first, then load it via the file picker in your app.</p>
+<p><strong>Glimpse:</strong> Mission Layer → Add New Custom Layer → Add KML layer → select the downloaded file.</p>
+<p><strong>SFMC:</strong> Map Settings → Map Layer Settings → Create Layer Setting → KML → select the downloaded file.</p>
+</div>
+
+<!-- ── Appendix ───────────────────────────────────────────────────────────── -->
+<h2 class="appendix">Appendix: Per-region KML contour files</h2>
+<p class="appendix">Earlier per-region contour files, kept for reference. BCContours.kml above is preferred.
+Download all: <a href="https://cproof.uvic.ca/mapserver/kmls.zip">kmls.zip</a></p>
+
+<table class="appendix">
+  <tr>
+    <th>Region</th>
+    <th>50 m</th>
+    <th>100 m</th>
+    <th>200 m</th>
+    <th>1000 m</th>
+  </tr>
+  <tr>
+    <td>North</td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursNorth0050.kml">ContoursNorth0050.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursNorth0100.kml">ContoursNorth0100.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursNorth0200.kml">ContoursNorth0200.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursNorth1000.kml">ContoursNorth1000.kml</a></td>
+  </tr>
+  <tr>
+    <td>Far North</td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursFarNorth0050.kml">ContoursFarNorth0050.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursFarNorth0100.kml">ContoursFarNorth0100.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursFarNorth0200.kml">ContoursFarNorth0200.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursFarNorth1000.kml">ContoursFarNorth1000.kml</a></td>
+  </tr>
+  <tr>
+    <td>Central Inner</td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursCentralInner0050.kml">ContoursCentralInner0050.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursCentralInner0100.kml">ContoursCentralInner0100.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursCentralInner0200.kml">ContoursCentralInner0200.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursCentralInner1000.kml">ContoursCentralInner1000.kml</a></td>
+  </tr>
+  <tr>
+    <td>South</td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursSouth0050.kml">ContoursSouth0050.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursSouth0100.kml">ContoursSouth0100.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursSouth0200.kml">ContoursSouth0200.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursSouth1000.kml">ContoursSouth1000.kml</a></td>
+  </tr>
+  <tr>
+    <td>Barkley</td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursBarkley0050.kml">ContoursBarkley0050.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursBarkley0100.kml">ContoursBarkley0100.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursBarkley0200.kml">ContoursBarkley0200.kml</a></td>
+    <td>—</td>
+  </tr>
+  <tr>
+    <td>Quadra</td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursQuadra0050.kml">ContoursQuadra0050.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursQuadra0100.kml">ContoursQuadra0100.kml</a></td>
+    <td><a href="https://cproof.uvic.ca/mapserver/kmls/ContoursQuadra0200.kml">ContoursQuadra0200.kml</a></td>
+    <td>—</td>
+  </tr>
+</table>
+
+<h2 class="appendix" style="margin-top:2em;">Appendix: Legacy pre-rendered tile layers</h2>
+<p class="appendix">Pre-rendered PNGs covering specific regions and depth ranges. BCCOG is preferred for new use. These remain available for compatibility.</p>
+
+<table>
+  <tr>
+    <th>Map</th>
+    <th>Layer</th>
+    <th>Description</th>
+    <th>Depth range</th>
+    <th>Extent (W, E, S, N)</th>
+    <th>Preview</th>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCNorth0400?SERVICE=WMS&REQUEST=GetCapabilities"><code>BCNorth0400</code></a></td>
+    <td><code>BCNorth0000to0400</code></td>
+    <td>BC North bathymetry</td>
+    <td>0–400 m</td>
+    <td>-133.0, -126.4, 50.0, 53.0</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCNorth0400?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCNorth0000to0400&SRS=EPSG:4326&BBOX=-133.0,50.0,-126.4,53.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCNorth0400?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCNorth0000to0400&SRS=EPSG:4326&BBOX=-133.0,50.0,-126.4,53.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=" alt="BCNorth0400 preview"></a></td>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCNorth1000?SERVICE=WMS&REQUEST=GetCapabilities"><code>BCNorth1000</code></a></td>
+    <td><code>BCNorth0000to1000</code></td>
+    <td>BC North bathymetry</td>
+    <td>0–1000 m</td>
+    <td>-133.0, -126.4, 50.0, 53.0</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCNorth1000?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCNorth0000to1000&SRS=EPSG:4326&BBOX=-133.0,50.0,-126.4,53.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCNorth1000?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCNorth0000to1000&SRS=EPSG:4326&BBOX=-133.0,50.0,-126.4,53.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=" alt="BCNorth1000 preview"></a></td>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCSouth0400?SERVICE=WMS&REQUEST=GetCapabilities"><code>BCSouth0400</code></a></td>
+    <td><code>BCSouth0000to0400</code></td>
+    <td>BC South bathymetry</td>
+    <td>0–400 m</td>
+    <td>-128.4, -124.6, 48.1, 50.0</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCSouth0400?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCSouth0000to0400&SRS=EPSG:4326&BBOX=-128.4,48.05,-124.55,50.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCSouth0400?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCSouth0000to0400&SRS=EPSG:4326&BBOX=-128.4,48.05,-124.55,50.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=" alt="BCSouth0400 preview"></a></td>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCSouth1000?SERVICE=WMS&REQUEST=GetCapabilities"><code>BCSouth1000</code></a></td>
+    <td><code>BCSouth0000to1000</code></td>
+    <td>BC South bathymetry</td>
+    <td>0–1000 m</td>
+    <td>-128.4, -124.6, 48.1, 50.0</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCSouth1000?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCSouth0000to1000&SRS=EPSG:4326&BBOX=-128.4,48.05,-124.55,50.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCSouth1000?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCSouth0000to1000&SRS=EPSG:4326&BBOX=-128.4,48.05,-124.55,50.0&WIDTH=395&HEIGHT=180&FORMAT=image/png&STYLES=" alt="BCSouth1000 preview"></a></td>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCBarkley200?SERVICE=WMS&REQUEST=GetCapabilities"><code>BCBarkley200</code></a></td>
+    <td><code>BCBarkley0000to0200</code></td>
+    <td>Barkley Sound bathymetry</td>
+    <td>0–200 m</td>
+    <td>-126.0, -124.4, 48.0, 49.5</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCBarkley200?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCBarkley0000to0200&SRS=EPSG:4326&BBOX=-126.0,48.0,-124.4,49.5&WIDTH=212&HEIGHT=300&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCBarkley200?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCBarkley0000to0200&SRS=EPSG:4326&BBOX=-126.0,48.0,-124.4,49.5&WIDTH=212&HEIGHT=300&FORMAT=image/png&STYLES=" alt="BCBarkley200 preview"></a></td>
+  </tr>
+  <tr>
+    <td><a href="https://cproof.uvic.ca/wms/BCShipDens?SERVICE=WMS&REQUEST=GetCapabilities"><code>BCShipDens</code></a></td>
+    <td><code>BCShipDens</code></td>
+    <td>BC ship density</td>
+    <td>—</td>
+    <td>-145.0, -124.0, 47.0, 54.0</td>
+    <td><a href="https://cproof.uvic.ca/wms/BCShipDens?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCShipDens&SRS=EPSG:4326&BBOX=-145.0,47.02,-124.0,53.98&WIDTH=395&HEIGHT=130&FORMAT=image/png&STYLES=">
+      <img class="preview" src="https://cproof.uvic.ca/wms/BCShipDens?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=BCShipDens&SRS=EPSG:4326&BBOX=-145.0,47.02,-124.0,53.98&WIDTH=395&HEIGHT=130&FORMAT=image/png&STYLES=" alt="BCShipDens preview"></a></td>
+  </tr>
+</table>
+
+<p class="note">
+  Source map files and data: <a href="https://github.com/cproofuvic/bcbathymetry">github.com/cproofuvic/bcbathymetry</a>
+</p>
+</body>
+</html>

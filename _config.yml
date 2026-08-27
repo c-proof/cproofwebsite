@@ -14,11 +14,12 @@ logo: /img/logos/LogoWide.png
 # Tertiary Parameters
 github_username:  c-proof
 project_repository: cproof
-twitter_username: cproof_uvic
+bluesky_username: cproof-uvic.bsky.social
+linkedin_username: c-proof
 facebook_username: cproofuvic
 
 # Build settings
-plugins: [jekyll-paginate]
+plugins: [jekyll-paginate, jekyll-code-snippet]
 markdown: kramdown
 highlighter: rouge
 permalink: none

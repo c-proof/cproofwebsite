@@ -1,0 +1,65 @@
+- dfo-walle652:
+  name: "dfo-walle652"
+  model: "Slocum G2"
+  sensors: "Temperature, Salinity, Oxygen, Chlorophyll Fluorescence, CDOM, Backscatter"
+  purchase-date: "2017-03-15"
+- dfo-eva035:
+  name: "dfo-eva035"
+  model: "SeaExplorer X2"
+  sensors: "Temperature, Salinity, Oxygen, Chlorophyll Fluorescence, CDOM, Backscatter"
+  purchase-date: "2018-03-05"
+- dfo-rosie713:
+  name: "dfo-rosie713"
+  model: "Slocum G3P"
+  sensors: "Temperature, Salinity, Oxygen, Nitrate, Chlorophyll Fluorescence, CDOM, Backscatter"
+  purchase-date: "2018-09-06"
+- dfo-bb046:
+  name: "dfo-bb046"
+  model: "SeaExplorer X2"
+  sensors: "Optics, Oxygen, CTD, Argos"
+  purchase-date: "2019-03-12"
+- dfo-mike579:
+  name: "dfo-mike579"
+  model: "Slocum G2"
+  sensors: "Microrider, Temperature, Salinity, Oxygen, Chlorophyll Fluorescence, Pressure"
+  purchase-date: ""
+- dfo-k999:
+  name: "dfo-k999"
+  model: "Slocum G3S"
+  sensors: "Oxygen, CTD, Pressure, Optics, Argos, Payload"
+  purchase-date: "2022-06-17"
+- dfo-maria997:
+  name: "dfo-maria997"
+  model: "Slocum G3S"
+  sensors: "CTD, Optics, Pressure, Oxygen, Argos, Payload"
+  purchase-date: "2022-06-17"
+- dfo-marvin1003:
+  name: "dfo-marvin1003"
+  model: "Slocum G3S"
+  sensors: "Argos, CTD, Oxygen, Optics, Pressure, Payload"
+  purchase-date: "2022-06-17"
+- dfo-hal1002:
+  name: "dfo-hal1002"
+  model: "Slocum G3S"
+  sensors: "CTD, Oxygen, Pressure, Optics, Argos, Payload"
+  purchase-date: "2022-06-17"
+- dfo-bumblebee998:
+  name: "dfo-bumblebee998"
+  model: "Slocum G3S"
+  sensors: "Argos, CTD, Optics, Oxygen, Pressure, Payload"
+  purchase-date: "2022-06-17"
+- dfo-kitt1097:
+  name: "dfo-kitt1097"
+  model: "Slocum G3S"
+  sensors: "CTD, Pressure, Microrider, Oxygen, Payload"
+  purchase-date: "2023-06-02"
+- dfo-colin1142:
+  name: "dfo-colin1142"
+  model: "Slocum G3S"
+  sensors: "CTD, Optics, Oxygen, Pressure, Argos"
+  purchase-date: "2023-11-13"
+- skookum-346:
+  name: "skookum-346"
+  model: "Slocum G3S"
+  sensors: ""
+  purchase-date: ""

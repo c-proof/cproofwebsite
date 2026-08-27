@@ -27,18 +27,27 @@ Underwater ocean gliders are autonomous vehicles that use a buoyancy engine to m
 
 ### Meet the Fleet
 
-<table>
+<table style="font-family: monospace; font-size: small; border-collapse: collapse;">
 {% for glider in site.data.gliders %}
-  <tr>
-    <td><strong> {{ glider.name }}</strong></td>
-    <td>{{ glider.model }}</td>
-    <td>Sensors: {{ glider.sensors }}</td>
-    <td>{{ glider.purchase-date }}</td>
+  <tr style="border-bottom: 1px solid #ddd;">
+    <td style="padding: 3px; padding-right: 10px;"><strong>{{ glider.name }}</strong></td>
+    <td style="padding: 3px; padding-right: 10px;">{{ glider.model }}</td>
+    <td style="padding: 3px; padding-right: 10px;">{{ glider.sensors }}</td>
+    <td style="padding: 3px;">{{ glider.purchase-date }}</td>
   </tr>
 {% endfor %}
 </table>
 
 <hr>
+
+# Wirewalkers
+
+<figure>
+<img class="img" src="/img/WirewalkerFjord.jpg" alt="Wirewalker deployed in Bute Inlet.">
+</figure>
+
+The Wirewalker is an innovative wave-powered profiling mooring developed by Del Mar Oceanographic capable of sending its data back in realtime.  C-PROOF partners [Hakai](https://hakai.org) have deployed a pair of wirewalkers in Bute Inlet to capture estuarine and wind driven cycles in the Inlet in real time.  While there are not a lot of waves in the Inlet, there is sometimes enough to power the wirewalker up and down more than 20 times a day.  Diagnostics are at <https://hakaiinstitute.github.io/hakai-report-desk/wirewalker/> and data from the Hakai ERDDAP <https://catalogue.hakai.org/erddap/info/>.
+
 
 # Biogeochemical Argo Floats
 

@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>C-PROOF Glider Command State</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <style>
+    :root {
+      --bg:         #f0f2f4;
+      --bg-deeper:  #e2e5e9;
+      --text:       #222;
+      --text-bold:  #000;
+      --text-muted: #555;
+      --border:     #bbb;
+      --active:     #2e7d32;
+      --inactive:   #999;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+    h1 { font-size: 1.4em; color: var(--text-bold); margin-bottom: 8px; }
+    #status-msg { color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px; }
+    #glider-list {
+      list-style: none;
+      width: min(96vw, 980px);
+    }
+    #glider-list > li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-deeper);
+    }
+    #glider-list .archive-panel li,
+    #glider-list .queue-section li {
+      display: list-item;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot.active   { background: var(--active); box-shadow: 0 0 6px var(--active); }
+    .dot.inactive { background: var(--inactive); }
+    .glider-name { font-weight: bold; color: var(--text-bold); cursor: pointer; }
+    .glider-name:hover { text-decoration: underline; }
+    .queue-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 0.72em;
+      font-weight: 700;
+      color: #7a2e00;
+      background: #ffe0cc;
+      border: 1px solid #f0b08a;
+      vertical-align: middle;
+    }
+    .glider-age  { font-size: 0.82em; color: var(--text-muted); margin-left: auto; }
+    #error-msg { color: #e57373; font-size: 0.9em; margin-top: 10px; }
+
+    .glider-item {
+      flex-direction: column;
+      align-items: stretch;
+      cursor: default;
+    }
+    .glider-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      cursor: pointer;
+      user-select: none;
+    }
+    .glider-header:hover .glider-name { text-decoration: underline; }
+    .open-page-btn {
+      margin-left: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+    .open-page-btn:hover {
+      color: var(--text-bold);
+      border-color: var(--text-muted);
+    }
+    .expand-arrow {
+      font-size: 0.7em;
+      color: var(--text-muted);
+      margin-left: 4px;
+      transition: transform 0.15s;
+    }
+    .expand-arrow.open { transform: rotate(90deg); }
+
+    .archive-panel {
+      display: none;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      font-size: 0.98em;
+      background: #f7f8fa;
+      border-radius: 6px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .archive-panel.open { display: block; }
+    .archive-panel .arch-loading { color: var(--text-muted); }
+    .archive-scroll {
+      max-height: 280px;
+      overflow-y: auto;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 6px;
+      margin-top: 4px;
+    }
+    .archive-panel ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(360px, 1fr));
+      gap: 4px 16px;
+      font-family: monospace;
+    }
+    .archive-panel ul li { padding: 1px 0; min-width: 0; }
+    .archive-count { color: var(--text-muted); margin-bottom: 4px; }
+    .archive-panel ul li a {
+      color: #0b4f8a;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .file-link {
+      color: #0b4f8a;
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      font-family: monospace;
+      cursor: pointer;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .file-link:hover {
+      color: #08395f;
+      text-decoration: underline;
+    }
+    .file-link.active {
+      color: #111;
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .archive-panel ul {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #waypoint-map {
+      width: min(96vw, 980px);
+      height: 320px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      background: var(--bg-deeper);
+    }
+    .map-section {
+      display: none;
+    }
+    .map-section.active { display: block; }
+    #map-info {
+      width: min(96vw, 980px);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 8px 10px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      font-size: 0.92em;
+      line-height: 1.4;
+    }
+    #map-info .row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 8px;
+      padding: 2px 0;
+      border-bottom: 1px solid #ececec;
+    }
+    #map-info .row:last-child { border-bottom: none; }
+    #map-info .k { color: #555; font-weight: 600; }
+    #map-info .v { color: #222; font-family: monospace; }
+    #map-info[hidden] { display: none; }
+    .glider-marker-icon {
+      background: transparent;
+      border: none;
+    }
+    .glider-marker-shape {
+      width: 18px;
+      height: 12px;
+      background: #ff9800;
+      border: 1px solid #8a4b00;
+      clip-path: polygon(0% 50%, 55% 6%, 100% 50%, 55% 94%);
+      transform: rotate(var(--heading, -72deg));
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7);
+    }
+    .archive-panel ul li a:hover {
+      color: #08395f;
+      text-decoration: underline;
+    }
+    .archive-panel .arch-error { color: #e57373; }
+
+    .queue-section {
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+    .queue-title {
+      color: var(--text-bold);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .queue-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9em;
+      margin: 8px 0 4px;
+    }
+    .queue-items {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(320px, 1fr));
+      gap: 4px 12px;
+      margin-bottom: 6px;
+    }
+    .queue-item {
+      border: none;
+      background: transparent;
+      margin: 0;
+      overflow: visible;
+      min-width: 0;
+    }
+    .queue-item summary {
+      cursor: pointer;
+      padding: 2px 0;
+      font-family: monospace;
+      font-size: 0.88em;
+      background: transparent;
+      list-style: none;
+    }
+    .queue-item summary::-webkit-details-marker { display: none; }
+    .queue-item summary::before {
+      content: '▸ ';
+      color: #777;
+    }
+    .queue-item[open] summary::before { content: '▾ '; }
+    .queue-item[open] {
+      grid-column: 1 / -1;
+    }
+    .queue-item .status {
+      font-family: Arial, sans-serif;
+      font-size: 0.82em;
+      color: #555;
+      margin-left: 8px;
+    }
+    .queue-body {
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      margin-top: 4px;
+    }
+    .new-file {
+      border: 1px dashed #90a4ae;
+      border-radius: 4px;
+      padding: 8px;
+      background: #f8fbfd;
+      font-family: monospace;
+      white-space: pre;
+      max-height: 260px;
+      overflow: auto;
+    }
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .diff-col {
+      border: 1px solid #d7d7d7;
+      border-radius: 4px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .diff-col-title {
+      background: #f0f2f5;
+      padding: 4px 6px;
+      font-size: 0.82em;
+      color: #444;
+      border-bottom: 1px solid #d7d7d7;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .diff-lines {
+      max-height: 340px;
+      overflow: auto;
+      font-family: monospace;
+      font-size: 0.84em;
+      line-height: 1.25;
+      background: #fff;
+    }
+    .diff-line {
+      white-space: pre;
+      padding: 1px 6px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .diff-line.same { background: #ffffff; }
+    .diff-line.add { background: #e9f8ee; }
+    .diff-line.del { background: #fdecec; }
+    .diff-line.mod { background: #fff7dc; }
+    .diff-empty { color: #b0b0b0; }
+    @media (max-width: 1000px) {
+      .diff-grid {
+        grid-template-columns: 1fr;
+      }
+      .queue-items {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #file-viewer {
+      margin-top: 16px;
+      width: min(96vw, 980px);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-deeper);
+      padding: 10px 12px;
+    }
+    #file-viewer[hidden] { display: none; }
+    .viewer-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    #viewer-title {
+      font-size: 0.98em;
+      color: var(--text-bold);
+      overflow-wrap: anywhere;
+    }
+    #copy-btn {
+      margin-left: auto;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    #copy-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #open-btn {
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    #open-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #viewer-status {
+      color: var(--text-muted);
+      font-size: 0.88em;
+      margin-bottom: 6px;
+    }
+    #viewer-content {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #ffffff;
+      padding: 8px;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre;
+      font-size: 0.92em;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+
+<h1 id="page-title">Active Gliders</h1>
+<div id="file-viewer" hidden>
+  <div class="viewer-header">
+    <div id="viewer-title">No file selected</div>
+    <button id="open-btn" type="button" disabled>Open</button>
+    <button id="copy-btn" type="button" disabled>Copy</button>
+  </div>
+  <div id="viewer-status">Click an archive file to view it here.</div>
+  <pre id="viewer-content"></pre>
+</div>
+<div id="status-msg">Scanning slocum_dockserver…</div>
+<div class="map-section" id="map-section">
+  <h3>Waypoints (from latest goto file)</h3>
+  <div id="waypoint-map"></div>
+  <div id="map-info" hidden></div>
+</div>
+<ul id="glider-list"></ul>
+<div id="error-msg"></div>
+
+<script>
+const DOCKSERVER_URL = 'slocum_dockserver/';
+const ACTIVE_THRESHOLD_MS = 48 * 60 * 60 * 1000; // 48 hours
+const MIN_UPDATE_MS = Date.UTC(2023, 0, 1); // show only gliders updated since 2023-01-01 UTC
+const PAGE_URL = window.location.pathname;
+const DOCKSERVER_PATH = new URL(DOCKSERVER_URL, window.location.href).pathname;
+const selectedGlider = sanitizeGliderName(new URLSearchParams(window.location.search).get('glider'));
+
+const pageTitle = document.getElementById('page-title');
+const statusMsg  = document.getElementById('status-msg');
+const gliderList = document.getElementById('glider-list');
+const errorMsg   = document.getElementById('error-msg');
+const fileViewer = document.getElementById('file-viewer');
+const viewerTitle = document.getElementById('viewer-title');
+const viewerStatus = document.getElementById('viewer-status');
+const viewerContent = document.getElementById('viewer-content');
+const openBtn = document.getElementById('open-btn');
+const copyBtn = document.getElementById('copy-btn');
+const mapInfo = document.getElementById('map-info');
+
+let viewerText = '';
+let viewerUrl = '';
+let selectedFileButton = null;
+let waypointMap = null;
+
+function sanitizeGliderName(name) {
+  if (!name) return '';
+  const clean = String(name).replace(/^\/+|\/+$/g, '');
+  const parts = clean.split('/').filter(Boolean);
+  return parts.length ? parts[parts.length - 1] : '';
+}
+
+function archiveFileUrl(gliderName, fileName) {
+  const safeGlider = sanitizeGliderName(gliderName);
+  return `${DOCKSERVER_URL}${safeGlider}/archive/${encodeURIComponent(fileName)}`;
+}
+
+function hrefToFileName(href) {
+  const raw = href.split('/').pop();
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function parseFileListing(html, listingUrl) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const anchors = Array.from(doc.querySelectorAll('a[href]'));
+  const listingPath = new URL(listingUrl, window.location.href).pathname;
+  const files = [];
+  for (const a of anchors) {
+    const href = a.getAttribute('href');
+    if (!href || href === '../' || href === './' || href.startsWith('?') || href.startsWith('#')) continue;
+    let path;
+    try {
+      path = new URL(href, listingUrl).pathname;
+    } catch {
+      continue;
+    }
+    if (path.endsWith('/')) continue;
+    if (!path.startsWith(listingPath)) continue;
+    const relative = path.slice(listingPath.length);
+    if (!relative || relative.includes('/')) continue;
+    files.push(hrefToFileName(relative));
+  }
+  return [...new Set(files)];
+}
+
+function buildDiffRows(oldText, newText) {
+  const a = oldText.split(/\r?\n/);
+  const b = newText.split(/\r?\n/);
+  const rows = [];
+  let i = 0;
+  let j = 0;
+  while (i < a.length || j < b.length) {
+    const av = i < a.length ? a[i] : null;
+    const bv = j < b.length ? b[j] : null;
+    if (av === bv) {
+      rows.push({ left: av ?? '', right: bv ?? '', type: 'same' });
+      i += 1;
+      j += 1;
+      continue;
+    }
+    const av1 = i + 1 < a.length ? a[i + 1] : null;
+    const bv1 = j + 1 < b.length ? b[j + 1] : null;
+    if (av1 === bv) {
+      rows.push({ left: av ?? '', right: '', type: 'del' });
+      i += 1;
+      continue;
+    }
+    if (av === bv1) {
+      rows.push({ left: '', right: bv ?? '', type: 'add' });
+      j += 1;
+      continue;
+    }
+    rows.push({ left: av ?? '', right: bv ?? '', type: 'mod' });
+    if (i < a.length) i += 1;
+    if (j < b.length) j += 1;
+  }
+  return rows;
+}
+
+async function fetchQueueListing(gliderName, dirVariants) {
+  const out = [];
+  const seen = new Set();
+  for (const dir of dirVariants) {
+    try {
+      const resp = await fetch(`${DOCKSERVER_URL}${gliderName}/${dir}/`);
+      if (!resp.ok) continue;
+      const html = await resp.text();
+      const files = parseFileListing(html, resp.url || `${DOCKSERVER_URL}${gliderName}/${dir}/`);
+      for (const file of files) {
+        if (seen.has(file)) continue;
+        seen.add(file);
+        out.push({ dir, file });
+      }
+    } catch {
+      // ignore missing directory variant
+    }
+  }
+  return out;
+}
+
+async function fetchToGliderCount(gliderName) {
+  try {
+    const queued = await fetchQueueListing(gliderName, ['to_glider', 'to-glider']);
+    return queued.length;
+  } catch {
+    return 0;
+  }
+}
+
+async function fetchNewestQueuedGoto(gliderName) {
+  const queued = await fetchQueueListing(gliderName, ['to_glider', 'to-glider']);
+  const gotoCandidates = queued.filter((q) => /(^|_)goto_.*\.ma$/i.test(q.file));
+  if (!gotoCandidates.length) return null;
+  const pick = gotoCandidates[0];
+  const url = `${DOCKSERVER_URL}${gliderName}/${pick.dir}/${encodeURIComponent(pick.file)}`;
+  const text = await fetchText(url);
+  const waypoints = parseWaypoints(text);
+  if (!waypoints.length) return null;
+  return { file: pick.file, dir: pick.dir, waypoints };
+}
+
+async function fetchText(url) {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  return resp.text();
+}
+
+async function renderQueueComparisons(gliderName, archiveFileNames, panel) {
+  const newestByBase = new Map();
+  for (const fname of archiveFileNames) {
+    const base = fname.replace(/^\d{8}T\d{6}_/, '');
+    if (!newestByBase.has(base)) newestByBase.set(base, fname);
+  }
+
+  const [toGlider, toScience] = await Promise.all([
+    fetchQueueListing(gliderName, ['to_glider', 'to-glider']),
+    fetchQueueListing(gliderName, ['to_science', 'to-science'])
+  ]);
+
+  const allQueued = [...toGlider, ...toScience];
+  const totalQueue = allQueued.length;
+  if (totalQueue === 0) return;
+
+  const section = document.createElement('div');
+  section.className = 'queue-section';
+  const title = document.createElement('div');
+  title.className = 'queue-title';
+  title.textContent = `Queued Files (${totalQueue})`;
+  section.appendChild(title);
+
+  const renderGroup = async (label, items) => {
+    if (!items.length) return;
+    const subtitle = document.createElement('div');
+    subtitle.className = 'queue-subtitle';
+    subtitle.textContent = `${label} (${items.length})`;
+    section.appendChild(subtitle);
+
+    const list = document.createElement('div');
+    list.className = 'queue-items';
+    section.appendChild(list);
+
+    for (const item of items) {
+      const match = newestByBase.get(item.file);
+      const details = document.createElement('details');
+      details.className = 'queue-item';
+      const summary = document.createElement('summary');
+      summary.innerHTML = `${escapeHtml(item.file)} <span class="status">${match ? `compare to ${escapeHtml(match)}` : 'new file (no archive match)'}</span>`;
+      details.appendChild(summary);
+      const body = document.createElement('div');
+      body.className = 'queue-body';
+      details.appendChild(body);
+
+      if (!match) {
+        try {
+          const qUrl = `${DOCKSERVER_URL}${gliderName}/${item.dir}/${encodeURIComponent(item.file)}`;
+          const qText = await fetchText(qUrl);
+          body.innerHTML = `<div class="new-file">${escapeHtml(qText)}</div>`;
+        } catch (err) {
+          body.textContent = `Could not load new file: ${err.message}`;
+        }
+        list.appendChild(details);
+        continue;
+      }
+
+      try {
+        const qUrl = `${DOCKSERVER_URL}${gliderName}/${item.dir}/${encodeURIComponent(item.file)}`;
+        const aUrl = archiveFileUrl(gliderName, match);
+        const [oldText, newText] = await Promise.all([fetchText(aUrl), fetchText(qUrl)]);
+        const rows = buildDiffRows(oldText, newText);
+
+        const leftLines = rows.map(r => `<div class="diff-line ${r.type}">${r.left ? escapeHtml(r.left) : '<span class="diff-empty"> </span>'}</div>`).join('');
+        const rightLines = rows.map(r => `<div class="diff-line ${r.type}">${r.right ? escapeHtml(r.right) : '<span class="diff-empty"> </span>'}</div>`).join('');
+
+        body.innerHTML = `
+          <div class="diff-grid">
+            <div class="diff-col">
+              <div class="diff-col-title">archive: ${escapeHtml(match)}</div>
+              <div class="diff-lines">${leftLines}</div>
+            </div>
+            <div class="diff-col">
+              <div class="diff-col-title">queue: ${escapeHtml(item.file)} (${escapeHtml(item.dir)})</div>
+              <div class="diff-lines">${rightLines}</div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        body.textContent = `Could not compare files: ${err.message}`;
+      }
+
+      list.appendChild(details);
+    }
+  };
+
+  const isToScience = (fileName) => /tbdlist|tdbdlist|sample/i.test(fileName);
+  const isMission = (fileName) => /\.mi$/i.test(fileName);
+
+  const missionItems = allQueued.filter((it) => isMission(it.file));
+  const scienceItems = allQueued.filter((it) => !isMission(it.file) && isToScience(it.file));
+  const gliderItems = allQueued.filter((it) => !isMission(it.file) && !isToScience(it.file));
+
+  await renderGroup('to-glider', gliderItems);
+  await renderGroup('to-science', scienceItems);
+  await renderGroup('missions (*.mi)', missionItems);
+  panel.appendChild(section);
+}
+
+function splitFileGroups(fileNames) {
+  const isToScience = (fileName) => /tbdlist|tdbdlist|sample/i.test(fileName);
+  const isMission = (fileName) => /\.mi$/i.test(fileName);
+  const missions = fileNames.filter((f) => isMission(f));
+  const science = fileNames.filter((f) => !isMission(f) && isToScience(f));
+  const glider = fileNames.filter((f) => !isMission(f) && !isToScience(f));
+  return [
+    { label: 'to-glider', items: glider },
+    { label: 'to-science', items: science },
+    { label: 'missions (*.mi)', items: missions }
+  ];
+}
+
+// Convert Slocum waypoint format LLmm.dd / LLLmm.dd to signed decimal degrees.
+function dmToDecimal(rawValue) {
+  const sign = rawValue < 0 ? -1 : 1;
+  const abs = Math.abs(rawValue);
+  const degrees = Math.floor(abs / 100);
+  const minutes = abs - (degrees * 100);
+  return sign * (degrees + minutes / 60);
+}
+
+function fmtCoord(lat, lon) {
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return 'unavailable';
+  return `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+}
+
+function fmtDmCoord(latRaw, lonRaw) {
+  if (!Number.isFinite(latRaw) || !Number.isFinite(lonRaw)) return 'unavailable';
+  return `${latRaw.toFixed(4)}, ${lonRaw.toFixed(4)}`;
+}
+
+function formatElapsedHHMM(timeStr) {
+  if (!timeStr) return '';
+  const t = new Date(timeStr);
+  if (Number.isNaN(t.getTime())) return '';
+  const ms = Date.now() - t.getTime();
+  if (!Number.isFinite(ms) || ms < 0) return '';
+  const totalMin = Math.floor(ms / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')} ago`;
+}
+
+function formatRangeKm(rangeText) {
+  if (!rangeText) return 'unavailable';
+  const m = String(rangeText).match(/-?\d+(?:\.\d+)?/);
+  if (!m) return rangeText;
+  const meters = parseFloat(m[0]);
+  if (!Number.isFinite(meters)) return rangeText;
+  return `${(meters / 1000).toFixed(2)} km`;
+}
+
+function parseUtcMs(timeStr) {
+  if (!timeStr) return NaN;
+  const norm = String(timeStr).replace(/\s+/, '').replace(/([+-]\d{2})(\d{2})$/, '$1:$2');
+  return Date.parse(norm);
+}
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const toRad = (d) => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2
+    + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function bearingDegrees(lat1, lon1, lat2, lon2) {
+  const toRad = (d) => d * Math.PI / 180;
+  const toDeg = (r) => r * 180 / Math.PI;
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const dl = toRad(lon2 - lon1);
+  const y = Math.sin(dl) * Math.cos(phi2);
+  const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(dl);
+  return (toDeg(Math.atan2(y, x)) + 360) % 360;
+}
+
+function destinationPoint(lat, lon, bearingDeg, distanceKm) {
+  const R = 6371;
+  const toRad = (d) => d * Math.PI / 180;
+  const toDeg = (r) => r * 180 / Math.PI;
+  const dByR = distanceKm / R;
+  const br = toRad(bearingDeg);
+  const p1 = toRad(lat);
+  const l1 = toRad(lon);
+  const p2 = Math.asin(Math.sin(p1) * Math.cos(dByR) + Math.cos(p1) * Math.sin(dByR) * Math.cos(br));
+  const l2 = l1 + Math.atan2(
+    Math.sin(br) * Math.sin(dByR) * Math.cos(p1),
+    Math.cos(dByR) - Math.sin(p1) * Math.sin(p2)
+  );
+  return { lat: toDeg(p2), lon: toDeg(l2) };
+}
+
+function estimate24hMetrics(summary) {
+  const pts = (summary?.surfaceHistory || [])
+    .map((p) => ({ ...p, t: parseUtcMs(p.time) }))
+    .filter((p) => Number.isFinite(p.t))
+    .sort((a, b) => a.t - b.t);
+
+  if (summary?.valid) {
+    const vt = parseUtcMs(summary.valid.time);
+    if (Number.isFinite(vt)) pts.push({ ...summary.valid, t: vt });
+  }
+  if (!pts.length && summary?.dr) {
+    const dt = parseUtcMs(summary.dr.time);
+    if (Number.isFinite(dt)) pts.push({ ...summary.dr, t: dt });
+  }
+
+  // de-duplicate same timestamps
+  const uniq = [];
+  const seen = new Set();
+  for (const p of pts) {
+    if (seen.has(p.t)) continue;
+    seen.add(p.t);
+    uniq.push(p);
+  }
+  if (uniq.length < 2) return null;
+
+  const now = uniq[uniq.length - 1];
+  const targetT = now.t - 24 * 3600 * 1000;
+
+  let start = null;
+  if (targetT <= uniq[0].t) {
+    start = uniq[0];
+  } else {
+    for (let i = 0; i < uniq.length - 1; i += 1) {
+      const a = uniq[i];
+      const b = uniq[i + 1];
+      if (a.t <= targetT && targetT <= b.t) {
+        const f = (targetT - a.t) / (b.t - a.t || 1);
+        start = {
+          lat: a.lat + f * (b.lat - a.lat),
+          lon: a.lon + f * (b.lon - a.lon),
+          t: targetT,
+          time: new Date(targetT).toISOString()
+        };
+        break;
+      }
+    }
+  }
+  if (!start) return null;
+
+  const windowHours = (now.t - start.t) / 3600000;
+  if (!Number.isFinite(windowHours) || windowHours <= 0) return null;
+
+  const dist24Km = haversineKm(start.lat, start.lon, now.lat, now.lon);
+  const speed24KmDay = (dist24Km / windowHours) * 24;
+  const speed24Ms = speed24KmDay / 86.4;
+
+  let smgKmDay = null;
+  let smgMs = null;
+  if (summary?.nextWp) {
+    const dStart = haversineKm(start.lat, start.lon, summary.nextWp.lat, summary.nextWp.lon);
+    const dNow = haversineKm(now.lat, now.lon, summary.nextWp.lat, summary.nextWp.lon);
+    const progressKm = dStart - dNow;
+    smgKmDay = (progressKm / windowHours) * 24;
+    smgMs = smgKmDay / 86.4;
+  }
+
+  return { start, now, windowHours, speed24KmDay, speed24Ms, smgKmDay, smgMs };
+}
+
+function findWaypointIndex(nextWp, waypoints) {
+  if (!nextWp || !Array.isArray(waypoints)) return null;
+  const eps = 1e-3;
+  for (let i = 0; i < waypoints.length; i += 1) {
+    const wp = waypoints[i];
+    if (Math.abs((wp.latRaw ?? NaN) - nextWp.latRaw) <= eps && Math.abs((wp.lonRaw ?? NaN) - nextWp.lonRaw) <= eps) {
+      return i + 1;
+    }
+  }
+  return null;
+}
+
+function parseLocationNode(parent, name) {
+  const loc = parent.querySelector(name);
+  if (!loc) return null;
+  const latRaw = parseFloat((loc.querySelector('lat')?.textContent || '').trim());
+  const lonRaw = parseFloat((loc.querySelector('lon')?.textContent || '').trim());
+  const time = (loc.querySelector('time')?.textContent || '').trim();
+  if (!Number.isFinite(latRaw) || !Number.isFinite(lonRaw)) return null;
+  return {
+    latRaw,
+    lonRaw,
+    lat: dmToDecimal(latRaw),
+    lon: dmToDecimal(lonRaw),
+    time
+  };
+}
+
+function parseNextWaypoint(value) {
+  if (!value) return null;
+  const m = value.match(/\(?\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)?/);
+  if (!m) return null;
+  const latRaw = parseFloat(m[1]);
+  const lonRaw = parseFloat(m[2]);
+  if (!Number.isFinite(latRaw) || !Number.isFinite(lonRaw)) return null;
+  return { latRaw, lonRaw, lat: dmToDecimal(latRaw), lon: dmToDecimal(lonRaw) };
+}
+
+function parseBearingDegrees(value) {
+  if (!value) return null;
+  const m = String(value).match(/-?\d+(?:\.\d+)?/);
+  if (!m) return null;
+  const deg = parseFloat(m[0]);
+  if (!Number.isFinite(deg)) return null;
+  // Navigation bearing is 0=N, 90=E; icon's default points E, so subtract 90.
+  return deg - 90;
+}
+
+function extractSurfaceHistory(reports, limit = 60) {
+  const seenTimes = new Set();
+  const out = [];
+  for (let i = reports.length - 1; i >= 0; i -= 1) {
+    const loc = parseLocationNode(reports[i], 'valid_location');
+    if (!loc) continue;
+    const t = loc.time || '';
+    if (t && seenTimes.has(t)) continue;
+    if (t) seenTimes.add(t);
+    out.push(loc);
+    if (out.length >= limit) break;
+  }
+  return out.reverse();
+}
+
+async function fetchGliderStateSummary(gliderName) {
+  const safe = sanitizeGliderName(gliderName);
+  const resp = await fetch(`${DOCKSERVER_URL}${safe}/gliderState.xml`);
+  if (!resp.ok) throw new Error(`gliderState.xml HTTP ${resp.status}`);
+  const xmlText = await resp.text();
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, 'application/xml');
+  if (xml.querySelector('parsererror')) throw new Error('gliderState.xml parse error');
+
+  const reports = Array.from(xml.querySelectorAll('writeTrack > report'));
+  const lastReport = reports[reports.length - 1] || null;
+  const dr = lastReport ? parseLocationNode(lastReport, 'dr_location') : null;
+  const valid = lastReport ? parseLocationNode(lastReport, 'valid_location') : null;
+  const surfaceHistory = extractSurfaceHistory(reports, 8);
+  const surfaceDateTime = lastReport?.querySelector('surface_date_time')?.textContent?.trim() || '';
+
+  const params = new Map();
+  xml.querySelectorAll('writeTrack > dataParameters > dataParameter').forEach((p) => {
+    const name = (p.querySelector('name')?.textContent || '').trim();
+    const value = (p.querySelector('value')?.textContent || '').trim();
+    if (name) params.set(name.toLowerCase(), value);
+  });
+
+  const nextWp = parseNextWaypoint(params.get('next waypoint coordinates'));
+  const nextRange = params.get('next waypoint range') || '';
+  const nextBearing = params.get('next waypoint bearing') || '';
+
+  return { dr, valid, surfaceHistory, surfaceDateTime, nextWp, nextRange, nextBearing };
+}
+
+function renderMapInfo(gliderName, summary, gotoFile, waypointCount, queuedGoto, nextWpIndex, metrics24h) {
+  if (!mapInfo) return;
+  const gotoLink = `<a href="${archiveFileUrl(gliderName, gotoFile)}" target="_blank" rel="noopener">${escapeHtml(gotoFile)}</a>`;
+  const nextWpText = summary?.nextWp
+    ? `${fmtDmCoord(summary.nextWp.latRaw, summary.nextWp.lonRaw)}${nextWpIndex ? ` (WP ${nextWpIndex} in current goto)` : ''}`
+    : 'unavailable';
+  const gpsText = summary?.valid
+    ? `${fmtCoord(summary.valid.lat, summary.valid.lon)}${summary?.dr ? ` (DR ${fmtCoord(summary.dr.lat, summary.dr.lon)})` : ''}`
+    : 'unavailable';
+  const surfacingTime = summary?.valid?.time || summary?.dr?.time || '';
+  const elapsed = formatElapsedHHMM(surfacingTime);
+  const surfacingText = surfacingTime
+    ? `${surfacingTime}${elapsed ? ` (${elapsed})` : ''}`
+    : 'unavailable';
+  const rows = [
+    ['Goto file', gotoLink],
+    ['Current GPS', gpsText],
+    ['Surfacing time', surfacingText],
+    ['Speed made good', Number.isFinite(metrics24h?.smgKmDay)
+      ? `${metrics24h.smgKmDay.toFixed(2)} km/day (${metrics24h.smgMs.toFixed(2)} m/s)`
+      : 'unavailable'],
+    ['Next waypoint', nextWpText],
+    ['Next range / bearing', `${formatRangeKm(summary?.nextRange)} / ${summary?.nextBearing || 'unavailable'}`]
+  ];
+
+  mapInfo.innerHTML = rows.map(([k, v]) => `<div class="row"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  mapInfo.hidden = false;
+}
+
+async function showArchiveFile(gliderName, fileName, sourceButton) {
+  const url = archiveFileUrl(gliderName, fileName);
+  if (selectedFileButton) selectedFileButton.classList.remove('active');
+  if (sourceButton) {
+    selectedFileButton = sourceButton;
+    selectedFileButton.classList.add('active');
+  }
+
+  fileViewer.hidden = false;
+  viewerTitle.textContent = `${gliderName}/archive/${fileName}`;
+  viewerStatus.textContent = `Loading ${fileName}...`;
+  viewerContent.textContent = '';
+  openBtn.disabled = true;
+  copyBtn.disabled = true;
+  viewerText = '';
+  viewerUrl = '';
+  fileViewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    viewerText = text;
+    viewerUrl = url;
+    viewerContent.textContent = text;
+    const lineCount = text === '' ? 0 : text.split(/\r?\n/).length;
+    viewerStatus.textContent = `${fileName}: ${lineCount} lines, ${text.length} chars`;
+    openBtn.disabled = false;
+    copyBtn.disabled = false;
+  } catch (err) {
+    viewerStatus.textContent = `Could not load ${fileName}: ${err.message}`;
+    viewerContent.textContent = `Failed URL:\n${url}`;
+  }
+}
+
+openBtn.addEventListener('click', () => {
+  if (!viewerUrl) return;
+  window.open(viewerUrl, '_blank', 'noopener');
+});
+
+copyBtn.addEventListener('click', async () => {
+  if (!viewerText) return;
+  try {
+    await navigator.clipboard.writeText(viewerText);
+    viewerStatus.textContent = 'Copied to clipboard.';
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = viewerText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    viewerStatus.textContent = 'Copied to clipboard.';
+  }
+});
+
+// Parse an Apache/nginx directory listing page and return subdirectory names.
+function parseDirectoryListing(html, listingUrl) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const anchors = Array.from(doc.querySelectorAll('a[href]'));
+  const listingPath = new URL(listingUrl, window.location.href).pathname;
+  const names = [];
+  for (const a of anchors) {
+    const href = a.getAttribute('href');
+    if (!href) continue;
+    if (href === '../' || href === './' || href.startsWith('?') || href.startsWith('#')) continue;
+    let path;
+    try {
+      path = new URL(href, listingUrl).pathname;
+    } catch {
+      continue;
+    }
+    if (!path.endsWith('/')) continue;
+    if (!path.startsWith(listingPath)) continue;
+    const relative = path.slice(listingPath.length).replace(/\/$/, '');
+    if (!relative) continue;
+    if (relative.includes('/')) continue;
+    const name = sanitizeGliderName(relative);
+    if (name) names.push(name);
+  }
+  return [...new Set(names)];
+}
+
+// Return age string like "3h 12m ago" or "2d 1h ago"
+function formatAge(ms) {
+  const totalMin = Math.floor(ms / 60000);
+  const d = Math.floor(totalMin / 1440);
+  const h = Math.floor((totalMin % 1440) / 60);
+  const m = totalMin % 60;
+  if (d > 0) return `${d}d ${h}h ago`;
+  if (h > 0) return `${h}h ${m}m ago`;
+  return `${m}m ago`;
+}
+
+async function checkGlider(name) {
+  const safeName = sanitizeGliderName(name);
+  if (!safeName) return null;
+  const url = `${DOCKSERVER_URL}${safeName}/gliderState.xml`;
+  try {
+    const resp = await fetch(url, { method: 'HEAD' });
+    if (!resp.ok) return null;
+    const lastModified = resp.headers.get('Last-Modified');
+    if (!lastModified) return null;
+    const modTime = new Date(lastModified);
+    if (Number.isNaN(modTime.getTime())) return null;
+    const ageMs = Date.now() - modTime.getTime();
+    return { name: safeName, ageMs, modTimeMs: modTime.getTime(), active: ageMs < ACTIVE_THRESHOLD_MS };
+  } catch {
+    return null;
+  }
+}
+
+// Parse waypoints from a goto .ma file
+function parseWaypoints(fileText) {
+  // Slocum mission files use <start:waypoints> ... <end:waypoints>
+  const waypointMatch = fileText.match(/<start:waypoints>([\s\S]*?)<end:waypoints>/)
+    || fileText.match(/<start:waypoints>([\s\S]*?)<\/start:waypoints>/);
+  if (!waypointMatch) return [];
+  return waypointMatch[1]
+    .trim()
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line && !/^#/.test(line))
+    .map(line => {
+      const parts = line.split(/\s+/);
+      const lonRaw = parseFloat(parts[0]);
+      const latRaw = parseFloat(parts[1]);
+      return {
+        lonRaw,
+        latRaw,
+        lon: dmToDecimal(lonRaw),
+        lat: dmToDecimal(latRaw)
+      };
+    })
+    .filter(wp => !isNaN(wp.lon) && !isNaN(wp.lat));
+}
+
+// Display waypoints on a map (per-glider page only)
+async function showWaypointMap(gliderName, files) {
+  const mapSection = document.getElementById('map-section');
+  const mapContainer = document.getElementById('waypoint-map');
+  if (!mapSection || !mapContainer) return;
+
+  // Find newest goto file
+  const gotoFile = files.find(f => /.*_goto_.*\.ma$/.test(f));
+  if (!gotoFile) {
+    mapSection.classList.remove('active');
+    if (mapInfo) mapInfo.hidden = true;
+    return;
+  }
+
+  try {
+    const [gotoResp, gliderSummary, queuedGoto] = await Promise.all([
+      fetch(archiveFileUrl(gliderName, gotoFile)),
+      fetchGliderStateSummary(gliderName).catch(() => null),
+      fetchNewestQueuedGoto(gliderName).catch(() => null)
+    ]);
+    if (!gotoResp.ok) throw new Error(`HTTP ${gotoResp.status}`);
+    const text = await gotoResp.text();
+    const waypoints = parseWaypoints(text);
+    if (waypoints.length === 0) {
+      mapSection.classList.remove('active');
+      if (mapInfo) mapInfo.hidden = true;
+      return;
+    }
+
+    mapSection.classList.add('active');
+
+    // Clean up previous map instance if it exists
+    if (waypointMap) {
+      waypointMap.remove();
+      waypointMap = null;
+    }
+    mapContainer.innerHTML = '';
+
+    // Small delay to ensure DOM is ready
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // Initialize map using geographic coordinates and add bathymetry overlay.
+    waypointMap = L.map(mapContainer, {
+      zoomControl: true,
+      attributionControl: true
+    });
+
+    const oceanBase = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+      { attribution: '&copy; Esri', maxZoom: 13 }
+    );
+    oceanBase.addTo(waypointMap);
+
+    const bccog = L.tileLayer.wms('https://cproof.uvic.ca/wms/BCCOG', {
+      layers: 'BCBathy',
+      format: 'image/png',
+      transparent: true,
+      version: '1.3.0',
+      attribution: 'CPROOF / UVic',
+      opacity: 0.95
+    });
+    bccog.addTo(waypointMap);
+
+    // Calculate bounds
+    const lons = waypoints.map(w => w.lon);
+    const lats = waypoints.map(w => w.lat);
+    const minLon = Math.min(...lons);
+    const maxLon = Math.max(...lons);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+    const margin = Math.max(maxLon - minLon, maxLat - minLat, 0.02) * 0.12;
+
+    // Plot waypoints with order cues: first=green, last=red, middle=blue
+    waypoints.forEach((wp, idx) => {
+      const isFirst = idx === 0;
+      const isLast = idx === waypoints.length - 1;
+      const markerColor = isFirst ? '#2e7d32' : (isLast ? '#c62828' : '#1976d2');
+      const marker = L.circleMarker([wp.lat, wp.lon], {
+        radius: 4,
+        fillColor: markerColor,
+        color: '#ffffff',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.95
+      });
+      marker.bindPopup(
+        `WP ${idx + 1}${isFirst ? ' (start)' : ''}${isLast ? ' (end)' : ''}<br>lat=${wp.lat.toFixed(5)}, lon=${wp.lon.toFixed(5)}<br>raw=${wp.latRaw.toFixed(2)}, ${wp.lonRaw.toFixed(2)}`
+      );
+      marker.addTo(waypointMap);
+    });
+
+    // Draw line connecting waypoints
+    const polyline = L.polyline(
+      waypoints.map(w => [w.lat, w.lon]),
+      { color: '#7cb4e8', weight: 1.5, opacity: 0.6 }
+    );
+    polyline.addTo(waypointMap);
+
+    // If there is a queued goto in to_glider/to-glider, overlay it distinctly.
+    if (queuedGoto?.waypoints?.length) {
+      L.polyline(
+        queuedGoto.waypoints.map(w => [w.lat, w.lon]),
+        { color: '#d84315', weight: 2.0, opacity: 0.9, dashArray: '6 4' }
+      ).addTo(waypointMap).bindPopup(`Queued goto route: ${queuedGoto.file}`);
+
+      queuedGoto.waypoints.forEach((wp, idx) => {
+        const m = L.circleMarker([wp.lat, wp.lon], {
+          radius: 5,
+          fillColor: '#ffccbc',
+          color: '#d84315',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.25
+        }).addTo(waypointMap);
+        m.bindPopup(`Queued WP ${idx + 1}<br>${queuedGoto.file}<br>lat=${wp.lat.toFixed(5)}, lon=${wp.lon.toFixed(5)}`);
+      });
+    }
+
+    const metrics24h = estimate24hMetrics(gliderSummary);
+    let projectedTip = null;
+    if (metrics24h?.speed24KmDay && gliderSummary?.nextWp) {
+      const cur = gliderSummary?.dr || gliderSummary?.valid || metrics24h?.now;
+      if (cur) {
+        const brg = bearingDegrees(cur.lat, cur.lon, gliderSummary.nextWp.lat, gliderSummary.nextWp.lon);
+        projectedTip = destinationPoint(cur.lat, cur.lon, brg, Math.max(metrics24h.speed24KmDay, 0));
+        L.polyline(
+          [[cur.lat, cur.lon], [projectedTip.lat, projectedTip.lon]],
+          { color: '#00c000', weight: 2.2, opacity: 0.95 }
+        )
+          .bindTooltip(`Projected 24h travel toward next WP: ${metrics24h.speed24KmDay.toFixed(1)} km/day`, { sticky: true })
+          .addTo(waypointMap);
+      }
+    }
+
+    // Add recent surfacing trail behind the glider (oldest -> newest).
+    if (gliderSummary?.surfaceHistory?.length) {
+      const trail = gliderSummary.surfaceHistory.filter((pt) => {
+        if (!gliderSummary?.dr) return true;
+        return Math.abs(pt.lat - gliderSummary.dr.lat) > 1e-6 || Math.abs(pt.lon - gliderSummary.dr.lon) > 1e-6;
+      });
+
+      if (trail.length >= 2) {
+        L.polyline(
+          trail.map(pt => [pt.lat, pt.lon]),
+          { color: '#607d8b', weight: 1.2, opacity: 0.65, dashArray: '2 4' }
+        ).addTo(waypointMap);
+      }
+
+      trail.forEach((pt, idx) => {
+        const alpha = 0.35 + (0.45 * (idx + 1) / Math.max(trail.length, 1));
+        const m = L.circleMarker([pt.lat, pt.lon], {
+          radius: 3,
+          fillColor: '#546e7a',
+          color: '#ffffff',
+          weight: 0.7,
+          opacity: 0.9,
+          fillOpacity: alpha
+        }).addTo(waypointMap);
+        m.bindPopup(`Surfacing ${idx + 1}/${trail.length}<br>lat=${pt.lat.toFixed(5)}, lon=${pt.lon.toFixed(5)}<br>${pt.time || ''}`);
+      });
+    }
+
+    // Add glider current position and next waypoint from gliderState.xml when available.
+    if (gliderSummary?.dr) {
+      const headingDeg = parseBearingDegrees(gliderSummary?.nextBearing);
+      const gliderIcon = L.divIcon({
+        className: 'glider-marker-icon',
+        html: `<div class="glider-marker-shape" style="--heading:${headingDeg === null ? '-72' : headingDeg}deg" aria-label="glider"></div>`,
+        iconSize: [18, 12],
+        iconAnchor: [9, 6]
+      });
+      const drMarker = L.marker([gliderSummary.dr.lat, gliderSummary.dr.lon], {
+        icon: gliderIcon,
+        zIndexOffset: 500
+      }).addTo(waypointMap);
+      drMarker.bindPopup(`Current DR<br>lat=${gliderSummary.dr.lat.toFixed(5)}, lon=${gliderSummary.dr.lon.toFixed(5)}<br>${gliderSummary.dr.time || ''}`);
+    }
+
+    if (gliderSummary?.nextWp) {
+      const nextMarker = L.circleMarker([gliderSummary.nextWp.lat, gliderSummary.nextWp.lon], {
+        radius: 5,
+        fillColor: '#7b1fa2',
+        color: '#4a0072',
+        weight: 1,
+        fillOpacity: 0.95
+      }).addTo(waypointMap);
+      nextMarker.bindPopup(`Next waypoint<br>lat=${gliderSummary.nextWp.lat.toFixed(5)}, lon=${gliderSummary.nextWp.lon.toFixed(5)}<br>${gliderSummary.nextRange || ''} ${gliderSummary.nextBearing || ''}`);
+
+      if (gliderSummary?.dr) {
+        L.polyline(
+          [[gliderSummary.dr.lat, gliderSummary.dr.lon], [gliderSummary.nextWp.lat, gliderSummary.nextWp.lon]],
+          { color: '#b76bd4', weight: 1.2, opacity: 0.85, dashArray: '4 4' }
+        ).addTo(waypointMap);
+      }
+    }
+
+    // Fit bounds
+    waypointMap.fitBounds([
+      [minLat - margin, minLon - margin],
+      [maxLat + margin, maxLon + margin]
+    ], { padding: [20, 20] });
+
+    if (gliderSummary?.dr || gliderSummary?.nextWp) {
+      const allLat = [...waypoints.map(w => w.lat)];
+      const allLon = [...waypoints.map(w => w.lon)];
+      if (queuedGoto?.waypoints?.length) {
+        queuedGoto.waypoints.forEach((wp) => {
+          allLat.push(wp.lat);
+          allLon.push(wp.lon);
+        });
+      }
+      if (gliderSummary?.surfaceHistory?.length) {
+        gliderSummary.surfaceHistory.forEach((pt) => {
+          allLat.push(pt.lat);
+          allLon.push(pt.lon);
+        });
+      }
+      if (projectedTip && (gliderSummary?.dr || gliderSummary?.valid)) {
+        const cur = gliderSummary?.dr || gliderSummary?.valid;
+        allLat.push(projectedTip.lat, cur.lat);
+        allLon.push(projectedTip.lon, cur.lon);
+      }
+      if (gliderSummary?.dr) {
+        allLat.push(gliderSummary.dr.lat);
+        allLon.push(gliderSummary.dr.lon);
+      }
+      if (gliderSummary?.nextWp) {
+        allLat.push(gliderSummary.nextWp.lat);
+        allLon.push(gliderSummary.nextWp.lon);
+      }
+      const minLat2 = Math.min(...allLat);
+      const maxLat2 = Math.max(...allLat);
+      const minLon2 = Math.min(...allLon);
+      const maxLon2 = Math.max(...allLon);
+      const margin2 = Math.max(maxLon2 - minLon2, maxLat2 - minLat2, 0.02) * 0.12;
+      waypointMap.fitBounds([
+        [minLat2 - margin2, minLon2 - margin2],
+        [maxLat2 + margin2, maxLon2 + margin2]
+      ], { padding: [20, 20] });
+    }
+
+    const nextWpIndex = findWaypointIndex(gliderSummary?.nextWp, waypoints);
+    renderMapInfo(name, gliderSummary, gotoFile, waypoints.length, queuedGoto, nextWpIndex, metrics24h);
+
+    // Ensure map is properly sized
+    waypointMap.invalidateSize();
+  } catch (err) {
+    console.error('Could not load waypoint map:', err);
+    mapSection.classList.remove('active');
+    if (mapInfo) mapInfo.hidden = true;
+  }
+}
+
+async function run() {
+  let html;
+  let listingUrl = DOCKSERVER_URL;
+  try {
+    const resp = await fetch(DOCKSERVER_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    listingUrl = resp.url || DOCKSERVER_URL;
+    html = await resp.text();
+  } catch (err) {
+    statusMsg.textContent = '';
+    errorMsg.textContent = `Could not fetch directory listing from "${DOCKSERVER_URL}": ${err.message}. Is directory listing enabled on the server?`;
+    return;
+  }
+
+  const gliders = parseDirectoryListing(html, listingUrl);
+  if (gliders.length === 0) {
+    statusMsg.textContent = 'No glider directories found.';
+    return;
+  }
+
+  if (selectedGlider) {
+    pageTitle.textContent = `Glider: ${selectedGlider}`;
+  }
+
+  statusMsg.textContent = `Checking ${gliders.length} glider(s)…`;
+
+  const results = await Promise.all(gliders.map(checkGlider));
+
+  // Filter to gliders updated since 2023-01-01, then sort active first and newest state first.
+  const valid = results.filter(Boolean);
+  const recentValid = valid.filter((g) => g.modTimeMs >= MIN_UPDATE_MS).sort((a, b) => {
+    if (a.active !== b.active) return a.active ? -1 : 1;
+    return a.ageMs - b.ageMs;
+  });
+  const noXml = gliders.filter(name => !results.find(r => r && r.name === name));
+
+  let validToRender = recentValid;
+  let noXmlToRender = [];
+  if (selectedGlider) {
+    validToRender = recentValid.filter(g => g.name === selectedGlider);
+    noXmlToRender = noXml.filter(name => name === selectedGlider);
+    if (validToRender.length === 0 && noXmlToRender.length === 0) {
+      statusMsg.textContent = `Glider not found: ${selectedGlider}`;
+      return;
+    }
+  }
+
+  gliderList.innerHTML = '';
+
+  const queueCounts = new Map();
+  if (!selectedGlider) {
+    const names = [...new Set([...validToRender.map(g => g.name), ...noXmlToRender])];
+    const counts = await Promise.all(names.map(async (n) => [n, await fetchToGliderCount(n)]));
+    counts.forEach(([n, c]) => queueCounts.set(n, c));
+  }
+
+  function makeGliderItem(name, dotClass, dotStyle, ageLabel, startOpen, toGliderCount) {
+    const li = document.createElement('li');
+    li.className = 'glider-item';
+
+    const queueBadge = toGliderCount > 0
+      ? `<span class="queue-badge" title="Files waiting in to-glider">to-glider: ${toGliderCount}</span>`
+      : '';
+
+    const header = document.createElement('div');
+    header.className = 'glider-header';
+    header.innerHTML = `
+      <span class="dot ${dotClass}" ${dotStyle ? `style="${dotStyle}"` : ''}></span>
+      <span class="glider-name">${name}${queueBadge}</span>
+      <button class="open-page-btn" type="button" title="Open dedicated glider page">Open page</button>
+      <span class="expand-arrow">▶</span>
+      <span class="glider-age">${ageLabel}</span>
+    `;
+
+    const openPageBtn = header.querySelector('.open-page-btn');
+    openPageBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const url = `${PAGE_URL}?glider=${encodeURIComponent(name)}`;
+      window.open(url, '_blank', 'noopener');
+    });
+
+    const panel = document.createElement('div');
+    panel.className = 'archive-panel';
+
+    let loaded = false;
+    const togglePanel = async () => {
+      const arrow = header.querySelector('.expand-arrow');
+      const isOpen = panel.classList.toggle('open');
+      arrow.classList.toggle('open', isOpen);
+      if (isOpen && !loaded) {
+        loaded = true;
+        panel.innerHTML = '<span class="arch-loading">Loading archive…</span>';
+        try {
+          const resp = await fetch(`${DOCKSERVER_URL}${name}/archive/`);
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const html = await resp.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const files = Array.from(doc.querySelectorAll('a[href]'))
+            .map(a => a.getAttribute('href'))
+            .filter(h => !h.endsWith('/') && !h.startsWith('?') && h !== '../')
+            .reverse();
+          if (files.length === 0) {
+            panel.innerHTML = '<span class="arch-loading">Archive is empty.</span>';
+          } else {
+            // Split into current (latest of each basename) and full history
+            const seen = new Set();
+            const current = [];
+            for (const f of files) {
+              const fname = hrefToFileName(f);
+              const base = fname.replace(/^\d{8}T\d{6}_/, '');
+              if (!seen.has(base)) {
+                seen.add(base);
+                current.push(fname);
+              }
+            }
+
+            panel.innerHTML = '';
+            const archiveFileNames = files.map(f => hrefToFileName(f));
+
+            // Show queued to-glider/to-science diffs at the top of the panel.
+            await renderQueueComparisons(name, archiveFileNames, panel);
+
+            // Current state section
+            const curLabel = document.createElement('div');
+            curLabel.className = 'archive-count';
+            curLabel.textContent = `Current state (${current.length} files)`;
+            panel.appendChild(curLabel);
+
+            const curUl = document.createElement('ul');
+            curUl.style.marginBottom = '10px';
+            for (const group of splitFileGroups(current)) {
+              if (!group.items.length) continue;
+              const h = document.createElement('li');
+              h.style.gridColumn = '1 / -1';
+              h.style.color = '#666';
+              h.style.fontSize = '0.85em';
+              h.style.fontWeight = '600';
+              h.textContent = group.label;
+              curUl.appendChild(h);
+              for (const fname of group.items) {
+                const li2 = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'file-link';
+                btn.textContent = fname;
+                btn.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  showArchiveFile(name, fname, btn);
+                });
+                li2.appendChild(btn);
+                curUl.appendChild(li2);
+              }
+            }
+            panel.appendChild(curUl);
+
+            // Full history section
+            const histLabel = document.createElement('div');
+            histLabel.className = 'archive-count';
+            histLabel.textContent = `Full history (${files.length} files)`;
+            panel.appendChild(histLabel);
+
+            const scroll = document.createElement('div');
+            scroll.className = 'archive-scroll';
+            const histUl = document.createElement('ul');
+            for (const group of splitFileGroups(archiveFileNames)) {
+              if (!group.items.length) continue;
+              const h = document.createElement('li');
+              h.style.gridColumn = '1 / -1';
+              h.style.color = '#666';
+              h.style.fontSize = '0.85em';
+              h.style.fontWeight = '600';
+              h.textContent = group.label;
+              histUl.appendChild(h);
+              for (const fname of group.items) {
+                const li2 = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'file-link';
+                btn.textContent = fname;
+                btn.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  showArchiveFile(name, fname, btn);
+                });
+                li2.appendChild(btn);
+                histUl.appendChild(li2);
+              }
+            }
+            scroll.appendChild(histUl);
+            panel.appendChild(scroll);
+
+            // Load waypoint map if on a per-glider page
+            if (selectedGlider) {
+              await showWaypointMap(name, archiveFileNames);
+            }
+          }
+        } catch(err) {
+          panel.innerHTML = `<span class="arch-error">Could not load archive: ${err.message}</span>`;
+        }
+      }
+    };
+    header.addEventListener('click', togglePanel);
+
+    li.appendChild(header);
+    li.appendChild(panel);
+    gliderList.appendChild(li);
+
+    if (startOpen) {
+      togglePanel();
+    }
+  }
+
+  for (const g of validToRender) {
+    makeGliderItem(
+      g.name,
+      g.active ? 'active' : 'inactive',
+      null,
+      formatAge(g.ageMs),
+      Boolean(selectedGlider),
+      queueCounts.get(g.name) || 0
+    );
+  }
+  for (const name of noXmlToRender) {
+    makeGliderItem(
+      name,
+      '',
+      'background:#555',
+      'no gliderState.xml',
+      Boolean(selectedGlider),
+      queueCounts.get(name) || 0
+    );
+  }
+
+  const activeCount = validToRender.filter(g => g.active).length;
+  if (selectedGlider) {
+    statusMsg.textContent = `${activeCount} active / ${validToRender.length} with state file / ${validToRender.length + noXmlToRender.length} shown`;
+  } else {
+    const globalActive = recentValid.filter(g => g.active).length;
+    statusMsg.textContent = `${globalActive} active / ${recentValid.length} with state file shown (updated since 2023; active = updated < 48 h)`;
+  }
+}
+
+run();
+</script>
+</body>
+</html>

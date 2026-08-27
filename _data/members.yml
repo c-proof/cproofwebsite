@@ -114,7 +114,7 @@
   type: cproofstaff
 
 - name: Hayley Dosser
-  visible: true
+  visible: false
   role: Physical Scientist
   title: Institute of Ocean Sciences
   org:
@@ -144,13 +144,13 @@
   type: cproofstaff
 
 - name: Seth Fleming-Alho
-  visible: true
+  visible: false
   role: Junior Glider Technician with DFO
   title: Institute of Ocean Sciences
   org:
   img: img/Seth_photo.jpg
   url:
-  bio: Seth is developing a fully-functional open-source prototype glider and assisting James Pegg at the Pacific Biological Station. 
+  bio: Seth is developing a fully-functional open-source prototype glider and assisting James Pegg at the Pacific Biological Station.
   type: cproofstaff
 
 - name: Jennifer Jackson
@@ -181,4 +181,29 @@
   img: img/ChrisMackenzie.jpg
   url:
   bio: Chris works with C-PROOF ocean gliders from a remote Hakai Institute field station on Calvert Island.
+  type: cproofstaff
+
+- name: Drew Jordison
+  visible: true
+  role: Research Technician
+  title:
+  org: Hakai Institute
+  img: img/Jordison.jpg
+  url:
+  bio: Drew works with C-PROOF ocean gliders from a remote Hakai Institute field station on Calvert Island.
+  type: cproofstaff
+
+- name: Lauryn Talbot
+  role: Data Analyst
+  degree: MSc
+  years: 2025--2026
+  institution: UVic
+  img: img/Talbot.png
+  org: Fisheres and Oceans Canada
+  status: current
+  bio: Data corrections for CTD and oxygen data
+  url: https://www.linkedin.com/in/lauryn-talbot-2975a4304/
+  groups:
+  visible: true
+  status: current
   type: cproofstaff

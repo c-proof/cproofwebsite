@@ -1,0 +1,15 @@
+---
+layout:     post
+title:      New post-doc opportunity - Ocean Observation, Analysis and Prediction
+author:     Jody Klymak
+tags: 		jobs
+subtitle:  	Applications considered from 1 Apr until filled; start Sep 2025 or earlier.
+category:   jobs
+header-img: "img/Explorer19/TullyExplorer0999Sm.jpg"
+---
+<!-- Start Writing Below in Markdown -->
+
+Applications are invited for a two-year postdoctoral fellowship (PDF) to analyze glider-based turbulence measurements to understand continental shelf dynamics off the coast of British Columbia Canada. The fellow will also contribute to research, teaching, mentoring, and partner engagement initiatives as part of the Pacific Rim Ocean Data Mobilization and Technology (PRODIGY) program.
+
+Start date September 1st, 2025: [Postdoctoral Fellowship in Ocean Observation, Analysis and Prediction](../img/PRODIGY_PDF_Ad_2025.pdf)
+

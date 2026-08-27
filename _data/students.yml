@@ -2,57 +2,151 @@
 
 - name: Lauryn Talbot
   role: MSc
+  degree: MSc
+  years: 2023--2026
+  institution: UVic
   img: img/Talbot.png
   org:
   github:
   title:
   bio: Investigating temperature variability along Line P with repeat glider lines
-  url:
+  url: https://www.linkedin.com/in/lauryn-talbot-2975a4304/
+  groups:
+  visible: true
+  status: past
+  type:
+
+- name: Martin Williamson
+  role: BSc Honours Physics and Ocean and Atmospheric Science
+  degree: BSc
+  years: 2025--
+  institution: UVic
+  bio: Deep water renewal in Fitz Hugh Sound
+  visible: true
+  status: current
+  img: img/Williamson.jpg
+
+- name: Emily Koopmans
+  role: BSc Honours Chemistry and Ocean Sciences
+  degree: BSc
+  years: 2025--
+  institution: UVic
+  bio: Ocean Optics Development of Glider-Based Productivity Analysis in BC Waters Using Backscatter
+  visible: true
+  status: current
+  img: img/Koopmans.jpg
+
+- name: Lauren Bannerman-Maxwell
+  role: MSc
+  degree: MSc
+  years: 2024--
+  institution: UVic
+  bio: Biooptics for understanding phytoplankton dynamics in the northeast Pacific Ocean
+  visible: true
+  status: current
+  img: img/Bannerman-Maxwell.jpg
+
+- name: Polina Erofeeva
+  role: BSc Honours Physics and Ocean and Atmospheric Science
+  degree: BSc
+  years: 2025--
+  institution: UVic
+  bio: Investigating internal tides in repeat glider lines along Line P
+  visible: true
+  status: current
+  img: img/Erofeeva.jpg
+
+- name: Sam Stevens
+  role: Postdoctoral fellow
+  degree: Postdoctoral
+  years: 2024--2025
+  institution: Hakai
+  img: img/Stevens.jpg
+  org:
+  github:
+  title:
+  bio: Drivers oceanic of variability on the BC shelves.
+  url: https://sws-ocean.github.io
+  groups:
+  visible: true
+  type:
+  status: past
+
+
+- name: Giuliana Berden
+  role: Postdoctoral fellow
+  degree: Postdoctoral
+  years: 2024--
+  institution: UVic
+  img: img/Berden.png
+  org:
+  github:
+  title:
+  status: current
+  bio: Investigating in-situ and remote sensing of meso- and submeoscale motions.
+  url: https://giulianab.github.io/
   groups:
   visible: true
   type:
 
 
+
 - name: Khush Jhugroo
-  role: Postdoctoral fellow in coastal physical oceanography at the Hakai Institute and UBC
+  role: Postdoctoral fellow
+  degree: Postdoctoral
+  years: 2022-2024
+  institution: Hakai Institute and UBC
   img: img/KhushJhugroo.jpg
   org:
+  status: past
   github:
   title:
-  bio: Investigating shelf sea processes and coast-to-open-ocean connectivity
+  bio: Investigating shelf sea processes and coast-to-open-ocean connectivity in coastal physical oceanography
   url:
   groups:
   visible: true
   type:
 
 - name: Bernie Yang
-  role: Postdoctoral fellow with C-PROOF at UVic
+  role: Postdoctoral fellow
+  degree: Postdoctoral
+  years: 2022-2024
+  institution: UVic
   img: img/BernieYang.jpg
   org:
+  status: past
   github:
   title:
   bio: Investigating how offshore ocean dynamics affect ocean productivity and salmon migration paths in the northeast Pacific Ocean
-  url:
+  url: https://sites.google.com/view/byang
   groups:
   visible: true
   type:
 
 - name: Seth Fleming-Alho
-  role: Past co-op student at UVic, now junior glider technician with DFO
-  img: img/Seth_photo.jpg
+  role: Co-op student
+  degree: BSc
+  years: 2022-2024
+  institution: UVic
+  img: img/Fleming-Alto.jpg
   org:
+  status: past
   github:
   title:
-  bio: Developing a fully-functional open-source prototype glider and assisting James Pegg at the Pacific Biological Station.
+  bio: Developed a fully-functional open-source prototype glider and assisted James Pegg at the Pacific Biological Station. Now junior glider technician with DFO.
   url:
   groups:
-  visible: false
+  visible: true
   type:
 
 - name: Julia Putko
-  role: 2022 Co-op Student at UVic
+  role: Co-op Student
+  degree: BSc
+  years: 2022
+  institution: UVic
   img: img/JuliaPutko.png
   org:
+  status: past
   github:
   title:
   bio: Made our glider data more accessible on the C-PROOF website.
@@ -60,3 +154,45 @@
   groups:
   visible: true
   type:
+
+- name: Shannon McClish
+  role: Postdoctoral fellow
+  degree: Postdoctoral
+  years: 2025--
+  institution: UBC
+  img: img/McClish.jpg
+  org:
+  status: current
+  bio: Investigating oxygen dynamics in coastal BC waters.
+  url: https://www.linkedin.com/in/shannon-mcclish-3429a11a9/
+  groups:
+  visible: true
+  type:
+
+
+- name: Hayden Amidon
+  role: PhD student
+  degree: PhD
+  years: 2023--
+  institution: UVic
+  img: img/Amidon.jpg
+  org:
+  status: current
+  bio: Oxygen dynamics using Argo floats in the North Pacific
+  url: https://www.uvic.ca/science/seos/people/graduates/profiles/amidon-hayden.php
+  groups:
+  visible: true
+  type:
+
+- name: Simin Kheradmand
+  role: MSc student
+  degree: MSc
+  years: 2023--
+  img: img/Kheradmand.jpg
+  institution: UVic
+  org:
+  status: current
+  bio: Respiration rates from Argo floats.
+  url: https://www.uvic.ca/science/seos/people/graduates/profiles/kheradmand-simin.php
+  groups:
+  visible: true

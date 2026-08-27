@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<title>C-PROOF Pilot Ops Log</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  /* ── Theme variables (matches glider_status.html) ─────────────────────── */
+  :root {
+    --bg:         #111;
+    --bg-deeper:  #000;
+    --panel:      #1a1a1a;
+    --text:       #ddd;
+    --text-bold:  #fff;
+    --text-muted: #888;
+    --border:     #333;
+    --alert-bg:   #2a1500;
+    --alert-text: #ff8800;
+    --input-bg:   #0c0c0c;
+  }
+  [data-theme="light"] {
+    --bg:         #f0f2f4;
+    --bg-deeper:  #e2e5e9;
+    --panel:      #ffffff;
+    --text:       #222;
+    --text-bold:  #000;
+    --text-muted: #555;
+    --border:     #bbb;
+    --alert-bg:   #fff3e0;
+    --alert-text: #cc4400;
+    --input-bg:   #ffffff;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f0f2f4; --bg-deeper: #e2e5e9; --panel: #ffffff; --text: #222;
+      --text-bold: #000; --text-muted: #555; --border: #bbb;
+      --alert-bg: #fff3e0; --alert-text: #cc4400; --input-bg: #ffffff;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--bg-deeper);
+    color: var(--text);
+  }
+  a { color: inherit; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 16px; font-weight: 700; color: var(--text-bold); }
+  #refresh-time { color: var(--text-muted); font-family: monospace; font-size: 11px; margin-top: 2px; }
+  #theme-toggle {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 10px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text);
+  }
+
+  #toolbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  #toolbar label { font-size: 12px; color: var(--text-muted); }
+  #archive-toggle {
+    margin-left: auto; font-size: 12px; color: var(--text-muted);
+    background: none; border: none; cursor: pointer; text-decoration: underline;
+  }
+  #export-all {
+    font-size: 12px; color: var(--text-muted); text-decoration: underline;
+  }
+
+  .mission-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--panel); color: var(--text);
+    font-size: 13px; font-weight: 600;
+  }
+  .mission-tab .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .mission-tab.selected { outline: 2px solid var(--text-bold); }
+
+  #archive-panel {
+    padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--border);
+    display: none; flex-wrap: wrap; gap: 6px;
+  }
+  #archive-panel.open { display: flex; }
+  #archive-panel .empty { color: var(--text-muted); font-size: 12px; }
+
+  #archive-detail { padding: 0 16px; }
+  #archive-detail:empty { display: none; }
+  #archive-detail .mission-card { margin: 14px 0; max-width: 640px; }
+
+  #dashboard {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 16px; padding: 16px; align-items: start;
+  }
+
+  .mission-card {
+    background: var(--panel); border: 1px solid var(--border); border-top: 4px solid #555;
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .card-header .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .card-header h2 { font-size: 15px; font-weight: 700; color: var(--text-bold); }
+  .archived-badge {
+    margin-left: auto; font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  .card-section { margin-top: 12px; }
+  .card-section:first-of-type { margin-top: 0; }
+  .card-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+
+  .status-text {
+    width: 100%; min-height: 90px; resize: vertical;
+    background: var(--input-bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px; font-family: monospace; font-size: 13px; line-height: 1.4;
+  }
+  .status-text[disabled] { opacity: 0.7; }
+  .status-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .status-meta { font-size: 11px; color: var(--text-muted); font-family: monospace; }
+
+  button.action {
+    background: #2a5adf; color: #fff; border: none; border-radius: 6px;
+    padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  button.action:hover { filter: brightness(1.1); }
+  button.action:disabled { opacity: 0.5; cursor: default; }
+  button.secondary { background: var(--panel); color: var(--text); border: 1px solid var(--border); }
+
+  .conflict-box {
+    margin-top: 10px; padding: 10px; border-radius: 6px;
+    background: var(--alert-bg); border: 1px solid var(--alert-text);
+    display: none;
+  }
+  .conflict-box.open { display: block; }
+  .conflict-box p { font-size: 12px; color: var(--alert-text); margin-bottom: 6px; font-weight: 600; }
+  .conflict-box pre {
+    white-space: pre-wrap; font-family: monospace; font-size: 12px; color: var(--text);
+    background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 8px; max-height: 150px; overflow-y: auto; margin-bottom: 8px;
+  }
+
+  .entry-text {
+    width: 100%; min-height: 50px; resize: vertical;
+    background: var(--input-bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px; font-family: monospace; font-size: 13px;
+  }
+  #toolbar input#pilot-name {
+    background: var(--input-bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 8px; font-size: 13px; width: 160px;
+  }
+  #toolbar input#pilot-name.invalid {
+    border-color: var(--alert-text); outline: 1px solid var(--alert-text);
+  }
+  .entry-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+
+  .log-list {
+    margin-top: 10px; max-height: 160px; overflow-y: auto; padding-right: 4px;
+  }
+  .log-entry {
+    border-left: 4px solid #555; padding: 6px 10px; margin-bottom: 6px;
+    background: var(--bg-deeper); border-radius: 0 4px 4px 0;
+  }
+  .log-entry .entry-head {
+    font-family: monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 3px;
+  }
+  .log-entry .entry-head b { color: var(--text-bold); }
+  .log-entry .entry-body { white-space: pre-wrap; font-size: 13px; line-height: 1.4; }
+  .empty-note { color: var(--text-muted); font-size: 13px; font-style: italic; }
+
+  #load-error {
+    display: none; margin: 10px 16px; padding: 10px 14px; border-radius: 6px;
+    background: var(--alert-bg); color: var(--alert-text); font-size: 13px;
+  }
+  #load-error.open { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>C-PROOF Pilot Ops Log</h1>
+    <div id="refresh-time">—</div>
+  </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <a href="./glider_status.html" style="font-size:13px; color:var(--text-muted); text-decoration:underline;">Glider status</a>
+    <button id="theme-toggle" title="Toggle light/dark mode">🌙 Dark</button>
+  </div>
+</header>
+
+<div id="toolbar">
+  <label for="pilot-name">Pilot *</label>
+  <input id="pilot-name" type="text" placeholder="your name (required)">
+  <button id="archive-toggle" type="button">Browse past missions ▾</button>
+  <a id="export-all" href="cgi-bin/logs_api.py?action=export_all" title="Download every mission's status + log as one text file — for searching across missions, or handing to an AI">Download full log ↓</a>
+</div>
+
+<div id="archive-panel"></div>
+<div id="archive-detail"></div>
+
+<div id="load-error"></div>
+
+<div id="dashboard"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Glider color scheme — MUST stay in sync with glider_status.html ──────
+  const COLORS = [
+    '#e74c3c', '#1f5a2a', '#f39c12', '#9b59b6', '#e67e22',
+    '#e91e63', '#8bc34a', '#f06292', '#ff7043', '#ab47bc',
+  ];
+  function colorForGlider(glider) {
+    const hash = [...glider].reduce((h, c) => Math.imul(31, h) + c.charCodeAt(0) | 0, 0);
+    return COLORS[Math.abs(hash) % COLORS.length];
+  }
+
+  const API = 'cgi-bin/logs_api.py'; // relative: works from wherever this page is deployed
+
+  const state = { archive: [] }; // [{glider, mission, last_updated}]
+  const cards = new Map(); // "glider/mission" -> {cardState, refs, card}
+
+  // ── small helpers ─────────────────────────────────────────────────────
+  function el(tag, props, children) {
+    const e = document.createElement(tag);
+    Object.assign(e, props || {});
+    (children || []).forEach(c => e.appendChild(c));
+    return e;
+  }
+
+  function fmtTimestamp(iso) {
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    const local = d.toLocaleString([], {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    });
+    const utc = iso.replace(/\.\d+Z$/, 'Z').replace('T', ' ').replace('Z', ' UTC');
+    return `${local} local  (${utc})`;
+  }
+
+  async function api(action, opts) {
+    opts = opts || {};
+    const url = `${API}?action=${encodeURIComponent(action)}` +
+      (opts.params ? '&' + new URLSearchParams(opts.params).toString() : '');
+    const init = { method: opts.method || 'GET' };
+    if (opts.body) {
+      init.method = 'POST';
+      init.headers = { 'Content-Type': 'application/json' };
+      init.body = JSON.stringify(opts.body);
+    }
+    let resp, data;
+    try {
+      resp = await fetch(url, init);
+    } catch (err) {
+      throw { networkError: true, message: 'Could not reach the server: ' + err.message };
+    }
+    const raw = await resp.text();
+    if (!raw) {
+      // The CGI script produced no output at all -- almost always means it
+      // crashed before printing anything (e.g. a Python error at import
+      // time). Check the terminal running the server for a traceback.
+      throw { networkError: true, message: `Server gave an empty response (HTTP ${resp.status}). Check the terminal running the server for a Python error.` };
+    }
+    try {
+      data = JSON.parse(raw);
+    } catch (err) {
+      throw { networkError: true, message: 'Server returned something that was not JSON: ' + raw.slice(0, 200) };
+    }
+    // Prefer the JSON body's own signal over the transport status code —
+    // some local test setups (plain `python3 -m http.server --cgi`) don't
+    // propagate the CGI "Status:" header to the real HTTP status line, so
+    // don't rely on resp.ok/resp.status alone. Real Apache deployments do
+    // set the HTTP status correctly; this just makes local testing work too.
+    if (data && data.error) {
+      throw { apiError: true, message: data.error };
+    }
+    return data;
+  }
+
+  function showLoadError(msg) {
+    const box = document.getElementById('load-error');
+    box.textContent = msg;
+    box.classList.add('open');
+  }
+  function clearLoadError() {
+    document.getElementById('load-error').classList.remove('open');
+  }
+
+  // ── pilot name (shared across every card) ───────────────────────────────
+  const PILOT_KEY = 'ops-log-pilot-name';
+  const pilotInput = document.getElementById('pilot-name');
+  pilotInput.value = localStorage.getItem(PILOT_KEY) || '';
+  pilotInput.addEventListener('change', () => localStorage.setItem(PILOT_KEY, pilotInput.value));
+  pilotInput.addEventListener('input', () => {
+    if (pilotInput.value.trim()) pilotInput.classList.remove('invalid');
+  });
+
+  // Require a pilot name before anything gets written to the log. Focuses
+  // the field and flags it instead of silently letting an unattributed
+  // entry through.
+  function requirePilot() {
+    if (pilotInput.value.trim()) return true;
+    pilotInput.classList.add('invalid');
+    pilotInput.focus();
+    alert('Please enter your name in the Pilot field before saving.');
+    return false;
+  }
+
+  // ── building one mission card (used for both the dashboard grid and the
+  //    read-only archive detail view) ─────────────────────────────────────
+  function buildCard(glider, mission, isArchive) {
+    const color = colorForGlider(glider);
+    const cardState = {
+      glider, mission, isArchive,
+      statusMtime: null, statusDirty: false, entries: [],
+    };
+
+    const statusBox = el('textarea', {
+      className: 'status-text', disabled: isArchive,
+      placeholder: "What's the plan right now — heading, next waypoint, anything the next pilot needs to know.",
+    });
+    const statusMeta = el('span', { className: 'status-meta' });
+    const saveBtn = el('button', { className: 'action', textContent: 'Save', disabled: isArchive });
+    const conflictText = el('pre');
+    const useTheirsBtn = el('button', { className: 'action secondary', textContent: 'Use their version' });
+    const overwriteBtn = el('button', { className: 'action', textContent: 'Overwrite with mine anyway' });
+    const conflictBox = el('div', { className: 'conflict-box' }, [
+      el('p', { textContent: 'Someone else saved a change while you were editing:' }),
+      conflictText,
+      el('div', { className: 'status-row' }, [useTheirsBtn, overwriteBtn]),
+    ]);
+
+    const entryText = el('textarea', {
+      className: 'entry-text', disabled: isArchive,
+      placeholder: 'What happened, what you changed, anything worth recording.',
+    });
+    const addBtn = el('button', { className: 'action', textContent: 'Add entry', disabled: isArchive });
+    const entryList = el('div', { className: 'log-list' });
+
+    const refs = { statusBox, statusMeta, saveBtn, conflictBox, conflictText, entryList };
+
+    statusBox.addEventListener('input', () => { cardState.statusDirty = true; });
+    saveBtn.addEventListener('click', () => saveStatusForCard(cardState, refs));
+    useTheirsBtn.addEventListener('click', () => {
+      if (!conflictBox.classList.contains('open')) return;
+      const theirMtime = parseFloat(conflictBox.dataset.theirMtime);
+      if (Number.isNaN(theirMtime)) return;
+      statusBox.value = conflictBox.dataset.theirText;
+      cardState.statusMtime = theirMtime;
+      cardState.statusDirty = false;
+      conflictBox.classList.remove('open');
+      statusMeta.textContent = 'last saved ' + fmtTimestamp(new Date(theirMtime * 1000).toISOString());
+    });
+    overwriteBtn.addEventListener('click', () => {
+      if (!conflictBox.classList.contains('open')) return;
+      const theirMtime = parseFloat(conflictBox.dataset.theirMtime);
+      if (Number.isNaN(theirMtime)) return;
+      conflictBox.classList.remove('open');
+      saveStatusForCard(cardState, refs, theirMtime); // their mtime as the new base, then overwrite with our text
+    });
+    addBtn.addEventListener('click', () => addEntryForCard(cardState, refs));
+
+    const headerChildren = [
+      el('span', { className: 'dot', style: `background:${color}` }),
+      el('h2', { textContent: `${glider} / ${mission}` }),
+    ];
+    if (isArchive) headerChildren.push(el('span', { className: 'archived-badge', textContent: 'read only' }));
+
+    const card = el('section', { className: 'mission-card', style: `border-top-color:${color}` }, [
+      el('div', { className: 'card-header' }, headerChildren),
+      el('div', { className: 'card-section' }, [
+        el('div', { className: 'card-label', textContent: 'Status / plan' }),
+        statusBox,
+        el('div', { className: 'status-row' }, [saveBtn, statusMeta]),
+        conflictBox,
+      ]),
+      el('div', { className: 'card-section' }, [
+        el('div', { className: 'card-label', textContent: 'Log' }),
+        ...(isArchive ? [] : [entryText, el('div', { className: 'entry-row' }, [addBtn])]),
+        entryList,
+      ]),
+    ]);
+
+    // entryText isn't in refs (only needed here, at creation, to clear it after adding)
+    refs.entryText = entryText;
+
+    return { key: `${glider}/${mission}`, card, cardState, refs };
+  }
+
+  function renderEntriesForCard(cardState, refs) {
+    const color = colorForGlider(cardState.glider);
+    refs.entryList.innerHTML = '';
+    const entries = cardState.entries;
+    if (entries.length === 0) {
+      refs.entryList.appendChild(el('div', { className: 'empty-note', textContent: 'No entries yet.' }));
+      return;
+    }
+    entries.forEach(e => {
+      const head = el('div', { className: 'entry-head' }, [
+        el('b', { textContent: e.pilot || 'unknown' }),
+      ]);
+      head.appendChild(document.createTextNode(' — ' + fmtTimestamp(e.timestamp)));
+      refs.entryList.appendChild(el('div', { className: 'log-entry', style: `border-left-color:${color}` }, [
+        head,
+        el('div', { className: 'entry-body', textContent: e.text }),
+      ]));
+    });
+  }
+
+  async function loadCardData(cardState, refs) {
+    let data;
+    try {
+      data = await api('get_mission', { params: { glider: cardState.glider, mission: cardState.mission } });
+    } catch (err) {
+      refs.statusMeta.textContent = 'error loading: ' + err.message;
+      return;
+    }
+    if (!cardState.statusDirty) {
+      refs.statusBox.value = data.status.text || '';
+      cardState.statusMtime = data.status.mtime;
+      refs.statusMeta.textContent = data.status.mtime
+        ? 'last saved ' + fmtTimestamp(new Date(data.status.mtime * 1000).toISOString())
+        : 'not saved yet';
+    }
+    cardState.entries = data.entries;
+    renderEntriesForCard(cardState, refs);
+  }
+
+  async function saveStatusForCard(cardState, refs, forceMtime) {
+    if (cardState.isArchive) return;
+    if (!requirePilot()) return;
+    const text = refs.statusBox.value;
+    const baseMtime = (forceMtime !== undefined) ? forceMtime : cardState.statusMtime;
+    let data;
+    try {
+      data = await api('save_status', {
+        body: { glider: cardState.glider, mission: cardState.mission, text, base_mtime: baseMtime, pilot: pilotInput.value.trim() },
+      });
+    } catch (err) {
+      alert('Could not save: ' + err.message);
+      return;
+    }
+    if (data.conflict) {
+      refs.conflictText.textContent = data.current.text || '(empty)';
+      refs.conflictBox.classList.add('open');
+      refs.conflictBox.dataset.theirMtime = data.current.mtime;
+      refs.conflictBox.dataset.theirText = data.current.text || '';
+      return;
+    }
+    cardState.statusMtime = data.mtime;
+    cardState.statusDirty = false;
+    refs.conflictBox.classList.remove('open');
+    refs.statusMeta.textContent = 'last saved ' + fmtTimestamp(new Date(data.mtime * 1000).toISOString());
+  }
+
+  async function addEntryForCard(cardState, refs) {
+    if (cardState.isArchive) return;
+    const text = refs.entryText.value.trim();
+    if (!text) return;
+    if (!requirePilot()) return;
+    const pilot = pilotInput.value.trim();
+    localStorage.setItem(PILOT_KEY, pilot);
+    try {
+      await api('add_entry', { body: { glider: cardState.glider, mission: cardState.mission, pilot, text } });
+    } catch (err) {
+      alert('Could not save that entry: ' + err.message);
+      return;
+    }
+    refs.entryText.value = '';
+    await loadCardData(cardState, refs);
+  }
+
+  // ── dashboard (active missions) ──────────────────────────────────────────
+  function syncDashboard(missions) {
+    const container = document.getElementById('dashboard');
+    const keys = new Set();
+    missions.forEach(m => {
+      const key = `${m.glider}/${m.mission}`;
+      keys.add(key);
+      if (!cards.has(key)) {
+        const built = buildCard(m.glider, m.mission, false);
+        cards.set(key, built);
+        container.appendChild(built.card);
+      }
+    });
+    for (const [key, built] of [...cards]) {
+      if (!keys.has(key)) {
+        built.card.remove();
+        cards.delete(key);
+      }
+    }
+  }
+
+  // ── archive (past missions) ──────────────────────────────────────────────
+  function renderArchiveList() {
+    const archiveEl = document.getElementById('archive-panel');
+    archiveEl.innerHTML = '';
+    if (state.archive.length === 0) {
+      archiveEl.appendChild(el('span', { className: 'empty', textContent: 'No past missions logged yet.' }));
+      return;
+    }
+    state.archive.forEach(m => {
+      const color = colorForGlider(m.glider);
+      const tab = el('div', {
+        className: 'mission-tab',
+        onclick: () => showArchiveDetail(m.glider, m.mission),
+      }, [
+        el('span', { className: 'dot', style: `background:${color}` }),
+        el('span', { textContent: `${m.glider} / ${m.mission}` }),
+      ]);
+      archiveEl.appendChild(tab);
+    });
+  }
+
+  async function showArchiveDetail(glider, mission) {
+    const container = document.getElementById('archive-detail');
+    container.innerHTML = '';
+    const built = buildCard(glider, mission, true);
+    container.appendChild(built.card);
+    await loadCardData(built.cardState, built.refs);
+  }
+
+  document.getElementById('archive-toggle').addEventListener('click', () => {
+    document.getElementById('archive-panel').classList.toggle('open');
+  });
+
+  // ── refresh loop ─────────────────────────────────────────────────────
+  function updateRefreshClock() {
+    const now = new Date();
+    document.getElementById('refresh-time').textContent =
+      'Last refresh: ' + now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+  }
+
+  async function refreshAll() {
+    updateRefreshClock();
+    let activeResp, archiveResp;
+    try {
+      [activeResp, archiveResp] = await Promise.all([api('list_active'), api('list_archive')]);
+    } catch (err) {
+      showLoadError('Could not reach the log server: ' + err.message);
+      return;
+    }
+    clearLoadError();
+    state.archive = archiveResp.missions;
+    syncDashboard(activeResp.missions);
+    renderArchiveList();
+    await Promise.all([...cards.values()].map(({ cardState, refs }) => loadCardData(cardState, refs)));
+  }
+
+  async function init() {
+    await refreshAll();
+    setInterval(refreshAll, 30000);
+  }
+
+  // ── theme toggle (matches glider_status.html) ───────────────────────────
+  const themeBtn = document.getElementById('theme-toggle');
+  function isDark() {
+    const t = document.documentElement.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    themeBtn.textContent = dark ? '☀️ Light' : '🌙 Dark';
+    localStorage.setItem('ops-log-theme', dark ? 'dark' : 'light');
+  }
+  const urlTheme = new URLSearchParams(window.location.search).get('theme');
+  const savedTheme = urlTheme || localStorage.getItem('ops-log-theme');
+  applyTheme(savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches);
+  themeBtn.addEventListener('click', () => applyTheme(!isDark()));
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('ops-log-theme')) applyTheme(e.matches);
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>

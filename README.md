@@ -43,3 +43,12 @@ so we can sync with other people's changes as they are merged on the original.
 6. Push the changes to *your* remote:   `git push origin new-branch-name`
 
 7 git will now suggest that you can make a pull request to `c-proof`.  Do so and then it will get merged if all is OK
+
+## Socials:
+
+https://zapier.com/app/assets/zaps/folders/personal moves from blog posts to post to Facebook, Bluesky, and LinkedIn.
+
+- https://bsky.app/profile/cproof-uvic.bsky.social
+- https://www.linkedin.com/company/c-proof
+- https://www.facebook.com/cproofuvic
+

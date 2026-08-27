@@ -42,34 +42,69 @@ Finally, we recognize that learning and growth are ongoing. We acknowledge that 
 ### [In The News](/search/)
 
 
+<!-- Updated: Show date and author for each news item -->
 {% for post in site.data.inthenews %}{% if post.visible2 == true %}
 <ul class="post-preview">   <!---post-preview  -->
     <a href="{{ post.url }}">
         <h4 class="post-title">  {{ post.title }}
         </h4>
     </a>
-
-  </ul>
-
+    <div class="post-meta">
+      {% if post.date %}<span class="news-date">{{ post.date }}</span>{% endif %}
+      {% if post.author %}<span class="news-author"> by {{ post.author }}</span>{% endif %}
+    </div>
+</ul>
 {% endif %}
 {% endfor %}
 
 
 ### Publications
 
-If you use C-PROOF data, please let us know at [cproof@uvic.ca](mailto:cproof@uvic.ca).
+If you use C-PROOF data, please cite: Klymak, J., & Ross, T. (2025). C-PROOF Underwater Glider Deployment Datasets [Data set]. Canadian-Pacific Robotic Ocean Observing Facility. [doi:10.82534/44DS-K310](https://doi.org/10.82534/44DS-K310).
 
-<p>Wong Annie P. S., et al., 2020.<strong> Argo Data 1999–2019: Two Million Temperature-Salinity Profiles and Subsurface Velocity Observations From a Global Array of Profiling Floats</strong>, Frontiers in Marine Science, 7, <a href='https://www.frontiersin.org/article/10.3389/fmars.2020.00700'>doi:10.3389/fmars.2020.00700.</a></p>
+<div style="text-indent: -2em; padding-left: 2em;">
 
-<p>Roemmich Dean, et al., 2019.<strong> On the Future of Argo: A Global, Full-Depth, Multi-Disciplinary Array</strong>, Frontiers in Marine Science, 6, <a href='https://www.frontiersin.org/article/10.3389/fmars.2019.00439/'>doi:10.3389/fmars.2019.00439.</a></p>
+<p>G. Han, J. M. Klymak, T. Ross, and N. Chen, 2026: Validation of 1-day repeat SWOT measurements against tide-gauge and glider data off Canada's West Coast. <em>Geophy. Res. Lett.</em>, <a href="https://doi.org/10.1029/2025GL119491">doi:10.1029/2025GL119491</a></p>
 
-<p>Testor Pierre, et al., 2019.<strong> OceanGliders: A Component of the Integrated GOOS</strong>, Frontiers in Marine Science, 6, <a href='https://www.frontiersin.org/article/10.3389/fmars.2019.00422/'>doi:10.3389/fmars.2019.00422.</a></p>
 
-<p>Barth John A., et al., 2019.<strong> Better Regional Ocean Observing Through Cross-National Cooperation: A Case Study From the Northeast Pacific</strong>, Frontiers in Marine Science, 6, <a href='https://www.frontiersin.org/article/10.3389/fmars.2019.00093/'>doi:10.3389/fmars.2019.00093. </a></p>
+<p>Talbot, L. C., J. M. Klymak, T. Ross, and G. Han, 2026: Two Lateral Stirring Regimes in the Northeast Pacific. <em>JGR Oceans</em>, 131, e2025JC023699, <a href="https://doi.org/10.1029/2025JC023699">doi:10.1029/2025JC023699</a></p>
+
+<p>Stevens, S. W., C. Hannah, W. Evans, J. Klymak, S. Waterman, and T. Ross, 2025: Dissolved Oxygen Variability on the Canadian Pacific Shelf: Trends, Drivers, and Projections in the Context of Emerging Hypoxia in Queen Charlotte Sound. <em>Global Biogeochemical Cycles</em>, 39, e2025GB008608, <a href="https://doi.org/10.1029/2025GB008608">doi:10.1029/2025GB008608</a>.</p>
+
+<p>Hare, A. A., W. Evans, H. V. Dosser, J. M. Jackson, S. R. Alin, C. Hannah, T. Ross, and J. M. Klymak, 2025: Regression-based characterization of the marine carbonate system across shelf and nearshore waters of Queen Charlotte Sound. <em>Marine Chemistry</em>, 270, 104511, <a href="https://doi.org/10.1016/j.marchem.2025.104511">doi:10.1016/j.marchem.2025.104511</a>.</p>
+
+<p>Ross, T., H. V. Dosser, J. M. Klymak, W. Evans, A. Hare, J. Jackson, and S. Waterman, 2025: Ocean Gliders for Planning and Monitoring Remote Canadian Pacific Marine Protected Areas. <em>Oceanography</em>, 38(1), 104-114, <a href="https://doi.org/10.5670/oceanog.2025e104">doi:10.5670/oceanog.2025e104</a>.</p>
+
+<p>Wong, A. P. S., et al., 2020: Argo Data 1999–2019: Two Million Temperature-Salinity Profiles and Subsurface Velocity Observations From a Global Array of Profiling Floats. <em>Frontiers in Marine Science</em>, 7, <a href="https://www.frontiersin.org/article/10.3389/fmars.2020.00700">doi:10.3389/fmars.2020.00700</a>.</p>
+
+<p>Roemmich, D., et al., 2019: On the Future of Argo: A Global, Full-Depth, Multi-Disciplinary Array. <em>Frontiers in Marine Science</em>, 6, <a href="https://www.frontiersin.org/article/10.3389/fmars.2019.00439">doi:10.3389/fmars.2019.00439</a>.</p>
+
+<p>Testor, P., et al., 2019: OceanGliders: A Component of the Integrated GOOS. <em>Frontiers in Marine Science</em>, 6, <a href="https://www.frontiersin.org/article/10.3389/fmars.2019.00422">doi:10.3389/fmars.2019.00422</a>.</p>
+
+<p>Barth, J. A., et al., 2019: Better Regional Ocean Observing Through Cross-National Cooperation: A Case Study From the Northeast Pacific. <em>Frontiers in Marine Science</em>, 6, <a href="https://www.frontiersin.org/article/10.3389/fmars.2019.00093">doi:10.3389/fmars.2019.00093</a>.</p>
+
+</div>
 
 ### Presentations
 
 If you use C-PROOF data in a presentation, please let us know at [cproof@uvic.ca](mailto:cproof@uvic.ca).
+
+
+Kheradmand S, Hamme RC, Low Oxygen Utilization Rate below the mixed layer using BGC-Argo float data in Northeast Pacific Ocean.  *Ocean Sciences Meeting, 2026*
+
+Amidon CH, Hamme RC, In-situ Oxygen Calibration on BGC-Argo. *Ocean Sciences Meeting, 2026*
+
+Talbot et al, Two Lateral Stirring Regimes in the Northeast Pacific, *Ocean Sciences Meeting, 2026*
+
+Berden et al, The Role of a Cuddy in the Northeast Pacific in Driving Offshore Export and Retaining Nearshore Water,  *Ocean Sciences Meeting, 2026*
+
+Ross et al 2026, Review of temperature, salinity and density of the northeastern Pacific in 2025 using Argo, glider, satellite and Line P data, *State of the Pacific Ocean meeting, 2026*
+
+Kheradmand S, Hamme RC, *Canadian Meteorological and Oceanographic Society Congress* (May 2025) Saskatoon, SK. Poster: Low oxygen utilization rate below the mixed layer using BGC-Argo float data in Northeast Pacific Ocean
+
+Koopmans E (UG presenter),Hamme RC, *Canadian Meteorological and Oceanographic Society Congress* (May 2025)  Poster: Ocean optics: Development of glider-based productivity analysis in BC waters using backscatter.
+
+Ross et al 2025, Review of temperature, salinity and density of the northeastern Pacific in 2024 using Argo, glider, satellite and Line P data, *State of the Pacific Ocean meeting, 2025*
 
 Klymak et al, 2024, <a href="./talks/SOPOPoster2024.pdf">2023 State of the NEP Meso- and Submesoscales</a>, <strong>State of the Pacific Ocean meeting, 2024</strong>
 

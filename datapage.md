@@ -5,6 +5,8 @@ description: "C-PROOF Glider Data"
 header-img: "img/MikeSaanich19.jpg"
 ---
 
+If you use C-PROOF data, please cite: <i>Klymak, J., & Ross, T. (2025). C-PROOF Underwater Glider Deployment Datasets [Data set]. Canadian-Pacific Robotic Ocean Observing Facility. doi:<a href="https://doi.org/10.82534/44DS-K310">10.82534/44DS-K310</a></i>.
+
 ## Data Description
 
 Raw data from the gliders is available for most [deployments](/deployments). We further provide CF-compliant NetCDF files as either:
@@ -17,7 +19,11 @@ The data is  available at different levels of processing:
 - Realtime: Subset of data transmitted via Iridium while the glider is in mission, with automated processing steps and QA/QC applied.
 - Delayed: Full dataset collected by the glider and recovered post-mission, with all processing steps and QA/QC applied.
 - Corrected: Some data has corrections applied to the CTD data and/or the oxygen data to correct for thermal lag and sensor drifts.
+  - A general description of the corrections applied is available in the [data processing report](https://cproof.uvic.ca/gliderdata/deployments/reports/), and each specific deployment has a detailed report in the `reports/` subfolder.
 
+## Where were the gliders, and when?
+
+See [SSH plots new]({{ site.baseurl }}/gliderdata/deployments/sshplotsnew) for SSH and glider track plots for each day of C-PROOF.
 
 ## Data access:
 
@@ -52,7 +58,6 @@ Our data is available on the [IOOS ERDAP server](https://gliders.ioos.us/erddap/
 
 ## How to Cite
 
-When publishing C-PROOF ocean glider data, please use the following acknowledgement:
-‘The data were collected and made available by the Canadian-Pacific Robotic Ocean Observing Facility (C-PROOF),
-and are accessible at https://cproof.uvic.ca, DOI: [available soon].’ If you are using C-PROOF data,
-please contact Dr. Jody Klymak (jklymak@uvic.ca) to provide a citation for your publication.
+When publishing C-PROOF ocean glider data, please cite:
+<i>Klymak, J., & Ross, T. (2025). C-PROOF Underwater Glider Deployment Datasets [Data set]. Canadian-Pacific Robotic Ocean Observing Facility. doi:<a href="https://doi.org/10.82534/44DS-K310">10.82534/44DS-K310</a></i>
+If you are using C-PROOF data, please contact Dr. Jody Klymak (jklymak@uvic.ca) so we can add a citation to your publication.

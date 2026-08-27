@@ -2,7 +2,7 @@
 
 - name: Canadian Foundation of Innovation
   img: img/logos/CFI.png
-  url: http://www.innovation.ca
+  url: https://www.innovation.ca
   type: funder
   visible: true
   size: false
@@ -16,21 +16,21 @@
 
 - name: Fisheries and Oceans Canada
   img: img/logos/DFO.png
-  url: http://www.dfo-mpo.gc.ca/index-eng.htm
+  url: https://www.dfo-mpo.gc.ca/index-eng.htm
   type: funder
   visible: true
   size: true
 
 - name: Hakai Institute
   img: img/logos/Hakai.png
-  url: http://hakai.org
+  url: https://hakai.org
   type: funder
   visible: true
   size: false
 
 - name: NSERC-CRSNG
   img: img/logos/NSERC-CRSNG.png
-  url: http://www.nserc-crsng.gc.ca
+  url: https://www.nserc-crsng.gc.ca
   type: funder
   visible: true
   size: false
@@ -38,7 +38,7 @@
 
 - name: Ocean Networks Canada
   img: img/logos/ONC.png
-  url: http://www.oceannetworks.ca
+  url: https://www.oceannetworks.ca
   type: funder
   visible: true
   size: false
@@ -52,13 +52,13 @@
 
 - name: Teledyne-Webb Research
   img: img/logos/teledyne.svg
-  url: http://www.teledynemarine.com/webb-research/
+  url: https://www.teledynemarine.com/webb-research/
   type: industry
   visible: true
   size: false
 
 - name: Alseamar Alcen
-  img: img/logos/alseamar.svg
+  img: img/logos/Alseamar.svg
   url: https://www.alseamar-alcen.com
   type: industry
   visible: true
@@ -81,14 +81,22 @@
 
 - name: Hakai Institute
   img: img/logos/Hakai.png
-  url: http://hakai.org
+  url: https://hakai.org
   type: opfunder1
   visible: true
   size: false
 
+- name: Bamfield Marine Sciences Centre
+  img: img/logos/Bamfield.jpeg
+  url: https://bamfieldmsc.com
+  type: opfunder1
+  visible: true
+  size: false
+
+
 - name: Fisheries and Oceans Canada
   img: img/logos/DFO.png
-  url: http://www.dfo-mpo.gc.ca/index-eng.htm
+  url: https://www.dfo-mpo.gc.ca/index-eng.htm
   type: opfunder1
   visible: true
   size: true
@@ -100,7 +108,7 @@
   visible: true
   size: false
 
-- name: University of British Columbia 
+- name: University of British Columbia
   img: img/logos/UBC.png
   url: https://www.ubc.ca/
   type: opfunder2

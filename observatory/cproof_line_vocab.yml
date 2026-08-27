@@ -1,0 +1,330 @@
+lines:
+  Calvert:
+    long_name: Calvert Island Line
+    description: >
+      Runs from Fitz Hugh Sound, down Hakai Pass, across Queen Charlotte Sound,
+      and out to P16.
+    waypoints:
+    - station: FZH08
+      lon: -127.9805
+      lat: 51.7537
+    - station: HP01
+      lon: -128.011
+      lat: 51.7413
+    - station: HP02
+      lon: -128.0428
+      lat: 51.7295
+    - station: HP03
+      lon: -128.068
+      lat: 51.721
+    - station: HP04
+      lon: -128.0905
+      lat: 51.7102
+    - station: HP05
+      lon: -128.1192
+      lat: 51.7053
+    - station: HP08
+      lon: -128.1452
+      lat: 51.7045
+    - station: HP09
+      lon: -128.181
+      lat: 51.7067
+    - station: HP10
+      lon: -128.2152
+      lat: 51.7062
+    - station: QCS01
+      lon: -128.2767
+      lat: 51.7117
+    - station: CL02
+      lon: -128.368
+      lat: 51.705
+    - station: CL03
+      lon: -128.5
+      lat: 51.464
+    - station: CL04
+      lon: -128.6605
+      lat: 51.4083
+    - station: CL05
+      lon: -128.8237
+      lat: 51.417
+    - station: CL06
+      lon: -128.8812
+      lat: 51.3935
+    - station: CL07
+      lon: -128.9367
+      lat: 51.3713
+    - station: CL08
+      lon: -128.9937
+      lat: 51.348
+    - station: CL09
+      lon: -129.3543
+      lat: 51.2515
+    - station: CL10
+      lon: -129.5478
+      lat: 51.1842
+    - station: CL11
+      lon: -129.855
+      lat: 51.081
+    - station: CL12
+      lon: -130.0
+      lat: 51.0167
+    - station: CL13
+      lon: -130.979
+      lat: 50.9187
+    - station: CL14
+      lon: -131.1492
+      lat: 50.8493
+    - station: P16
+      lon: -134.6667
+      lat: 49.2833
+  LineP:
+    long_name: Line P long-term oceangraphic line
+    description: >
+      Long-standing oceanographic line from mouth of St. of Juan de Fuca to Station
+      Papa (P26).
+    waypoints:
+      - station: P1
+        lon: -125.5
+        lat: 48.575
+      - station: P2
+        lon: -126.0
+        lat: 48.6
+      - station: P3
+        lon: -126.3333
+        lat: 48.625
+      - station: P4
+        lon: -126.6667
+        lat: 48.65
+      - station: P5
+        lon: -127.1667
+        lat: 48.6917
+      - station: P6
+        lon: -127.6667
+        lat: 48.7433
+      - station: P7
+        lon: -128.1667
+        lat: 48.7767
+      - station: P8
+        lon: -128.6667
+        lat: 48.8167
+      - station: P9
+        lon: -129.1667
+        lat: 48.8567
+      - station: P10
+        lon: -129.6667
+        lat: 48.8933
+      - station: P11
+        lon: -130.1667
+        lat: 48.9333
+      - station: P12
+        lon: -130.6667
+        lat: 48.97
+      - station: P13
+        lon: -131.6667
+        lat: 49.0433
+      - station: P14
+        lon: -132.6667
+        lat: 49.1233
+      - station: P15
+        lon: -133.6667
+        lat: 49.2
+      - station: P16
+        lon: -134.6667
+        lat: 49.2833
+      - station: P17
+        lon: -135.6667
+        lat: 49.35
+      - station: P18
+        lon: -136.6667
+        lat: 49.4333
+      - station: P19
+        lon: -137.6667
+        lat: 49.5
+      - station: P20
+        lon: -138.6667
+        lat: 49.5667
+      - station: P21
+        lon: -139.6667
+        lat: 49.6333
+      - station: P22
+        lon: -140.6667
+        lat: 49.7
+      - station: P23
+        lon: -141.6667
+        lat: 49.7667
+      - station: P24
+        lon: -142.6667
+        lat: 49.8367
+      - station: P25
+        lon: -143.605
+        lat: 50.0
+      - station: P26
+        lon: -145.0
+        lat: 50.0
+  Southern:
+    long_name: Southern Line
+    description: >
+      Line from P4 to approximately 400 km offshore to the southeast.
+    waypoints:
+      - station: P4
+        lon: -126.6667
+        lat: 48.65
+      - station: S2
+        lon: -127.9667
+        lat: 48.1833
+      - station: S3
+        lon: -129.4333
+        lat: 47.65
+      - station: S4
+        lon: -131.15
+        lat: 46.9867
+  Bamfield:
+    long_name: Bamfield Line
+    description: >
+      Out of Bamfield, loop almost along the LC line, but a bit more due west, and return on LB line.
+    waypoints:
+      - station: BMSC01
+        lon: -125.174333
+        lat: 48.890000
+      - station: BMSC02
+        lon: -125.213167
+        lat: 48.879000
+      - station: BMSC03
+        lon: -125.253000
+        lat: 48.853500
+      - station: BMSC04
+        lon: -125.262167
+        lat: 48.827833
+      - station: BMSC05
+        lon: -125.261667
+        lat: 48.800833
+      - station: BMSC06
+        lon: -125.274000
+        lat: 48.780167
+      - station: BBMSC07
+        lon: -125.502333
+        lat: 48.759833
+      - station: BMSC08
+        lon: -125.667167
+        lat: 48.726833
+      - station: BMSC09
+        lon: -125.785167
+        lat: 48.705500
+      - station: BMSC10
+        lon: -126.412833
+        lat: 48.531167
+      - station: BMSC11
+        lon: -126.426500
+        lat: 48.538833
+      - station: BMSC12
+        lon: -126.73594
+        lat: 48.41158
+      - station: LB16
+        lon: -126.2833
+        lat: 48.0088
+      - station: LB13
+        lon: -125.9353
+        lat: 48.1767
+      - station: LB10
+        lon: -125.6892
+        lat: 48.3095
+      - station: LB07
+        lon: -125.3683
+        lat: 48.4780
+      - station: LB03
+        lon: -125.0930
+        lat: 48.6220
+  LC:
+    long_name: LC Line
+    description: >
+      La Perouse LC line
+    waypoints:
+    - station: LC01
+      lon: -125.4622
+      lat: 48.8407
+    - station: LC02
+      lon: -125.5158
+      lat: 48.8113
+    - station: LC03
+      lon: -125.5707
+      lat: 48.7825
+    - station: LC04
+      lon: -125.6800
+      lat: 48.7238
+    - station: LC05
+      lon: -125.7900
+      lat: 48.6657
+    - station: LC06
+      lon: -125.9000
+      lat: 48.6077
+    - station: LC07
+      lon: -126.0083
+      lat: 48.5493
+    - station: LC08
+      lon: -126.1183
+      lat: 48.4908
+    - station: LC09
+      lon: -126.2283
+      lat: 48.4323
+    - station: LC10
+      lon: -126.3367
+      lat: 48.3733
+    - station: LC11
+      lon: -126.4450
+      lat: 48.3158
+    - station: LC12
+      lon: -126.6667
+      lat: 48.2500
+  LB:
+    long_name: LB Line
+    description: >
+      La Perouse LB line
+    waypoints:
+    - station: LB01
+      lon: -124.9913
+      lat: 48.6733
+    - station: LB02
+      lon: -125.0400
+      lat: 48.6500
+    - station: LB03
+      lon: -125.0930
+      lat: 48.6220
+    - station: LB04
+      lon: -125.1453
+      lat: 48.5945
+    - station: LB05
+      lon: -125.2000
+      lat: 48.5667
+    - station: LB06
+      lon: -125.2585
+      lat: 48.5363
+    - station: LB07
+      lon: -125.3683
+      lat: 48.4780
+    - station: LB08
+      lon: -125.4775
+      lat: 48.4217
+    - station: LB09
+      lon: -125.5800
+      lat: 48.3667
+    - station: LB10
+      lon: -125.6892
+      lat: 48.3095
+    - station: LB11
+      lon: -125.7958
+      lat: 48.2533
+    - station: LB12
+      lon: -125.8650
+      lat: 48.2153
+    - station: LB13
+      lon: -125.9353
+      lat: 48.1767
+    - station: LB14
+      lon: -126.0000
+      lat: 48.1413
+    - station: LB15
+      lon: -126.1410
+      lat: 48.0727
+    - station: LB16
+      lon: -126.2833
+      lat: 48.0088

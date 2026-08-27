@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>C-PROOF Glider Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <style>
+    /* ── Theme variables ─────────────────────────────────────────────────── */
+    :root {
+      --bg:         #111;
+      --bg-deeper:  #000;
+      --text:       #ddd;
+      --text-bold:  #fff;
+      --text-muted: #888;
+      --border:     #333;
+      --img-filter: invert(1) hue-rotate(180deg);
+      --alert-bg:   #2a1500;
+      --alert-text: #ff8800;
+    }
+    [data-theme="light"] {
+      --bg:         #f0f2f4;
+      --bg-deeper:  #e2e5e9;
+      --text:       #222;
+      --text-bold:  #000;
+      --text-muted: #555;
+      --border:     #bbb;
+      --img-filter: none;
+      --alert-bg:   #fff3e0;
+      --alert-text: #cc4400;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg:         #f0f2f4;
+        --bg-deeper:  #e2e5e9;
+        --text:       #222;
+        --text-bold:  #000;
+        --text-muted: #555;
+        --border:     #bbb;
+        --img-filter: none;
+        --alert-bg:   #fff3e0;
+        --alert-text: #cc4400;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; }
+    #map { height: 500px; width: 100%; }
+
+    /* Right-side control panel */
+    #control-panel {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: rgba(255,255,255,0.95);
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      min-width: 200px;
+    }
+    #panel-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      border-radius: 8px;
+    }
+    #panel-toggle:hover { background: rgba(0,0,0,0.04); }
+    #panel-arrow { font-size: 10px; transition: transform 0.2s; }
+    #panel-body { padding: 0 14px 10px; }
+    #panel-body.collapsed { display: none; }
+    #control-panel h4 {
+      font-size: 11px;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    #opacity-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #opacity-row label { color: #333; white-space: nowrap; }
+    #opacity-slider { flex: 1; cursor: pointer; }
+    #opacity-val { color: #555; min-width: 32px; text-align: right; }
+
+    /* KML list */
+    #kml-panel { margin-top: 10px; border-top: 1px solid #e5e5e5; padding-top: 8px; }
+    #kml-panel h4 { margin-bottom: 4px; }
+    .kml-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin: 5px 0;
+    }
+    .kml-swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+    .station-label { background: none; border: none; box-shadow: none; font-size: 11px;
+      font-weight: 600; color: #333; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+    .station-label::before { display: none; }
+    #glider-readouts { background: var(--bg); padding: 8px 0; overflow-x: auto; }
+    #refresh-time { color: var(--text-muted); font-family: monospace; font-size: 12px; padding: 4px 16px 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+    .leaflet-container { background: var(--bg-deeper); }
+
+    /* Row = one glider's readout, plus its ops-log status/plan panel.
+       Narrow screens: stacked (plan below readout). Wide screens: two columns. */
+    .glider-row {
+      margin: 6px 12px;
+    }
+    @media (min-width: 1200px) {
+      .glider-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr);
+        gap: 10px;
+        align-items: start;
+      }
+    }
+    .glider-readout {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--text);
+      padding: 8px 16px;
+      border-left: 4px solid #555;
+      margin: 6px 12px;
+      white-space: pre;
+    }
+    .glider-row .glider-readout { margin: 0; }
+    .glider-readout b { color: var(--text-bold); font-size: 13px; }
+    .glider-alert { background: var(--alert-bg) !important; outline: 1px solid #ff8800; color: var(--text) !important; }
+
+    .glider-plan {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--text);
+      padding: 8px 16px;
+      border-left: 4px solid #555;
+      border-radius: 0 4px 4px 0;
+      background: var(--bg-deeper);
+    }
+    @media (max-width: 1199px) {
+      .glider-plan { margin-top: 6px; }
+    }
+    .glider-plan .plan-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 5px;
+    }
+    .glider-plan .plan-label a { color: var(--text-muted); text-decoration: underline; text-transform: none; letter-spacing: 0; font-size: 11px; }
+    .glider-plan .plan-text { white-space: pre-wrap; }
+    .glider-plan .plan-text.plan-empty { color: var(--text-muted); font-style: italic; }
+    .kml-item label { cursor: pointer; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #battery-plots { background: var(--bg); display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 12px 16px; }
+    #ssh-plot { background: var(--bg); padding: 8px 16px 16px; }
+    #ssh-plot a.hist-link { font-family: monospace; font-size: 12px; color: var(--text-muted); margin-top: 4px; display: inline-block; }
+    #ssh-plot img { max-width: 500px; display: block; filter: var(--img-filter); }
+    .battery-plot { display: flex; flex-direction: column; align-items: flex-start; padding-left: 6px; }
+    .battery-plot span { font-family: monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+    .battery-plot img { max-width: 400px; width: 100%; height: auto; display: block; filter: var(--img-filter); }
+
+    /* Theme toggle button */
+    #theme-toggle {
+      position: absolute; top: 10px; right: 10px; z-index: 1001;
+      background: rgba(255,255,255,0.9); border: 1px solid #ccc;
+      border-radius: 6px; padding: 5px 10px; cursor: pointer;
+      font-size: 13px; font-weight: 600; color: #444;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    #theme-toggle:hover { background: rgba(255,255,255,1); }
+  </style>
+</head>
+<body>
+
+<div id="map">
+  <button id="theme-toggle" title="Toggle light/dark mode">🌙 Dark</button>
+  <div id="control-panel">
+    <button id="panel-toggle">Layers <span id="panel-arrow" style="transform:rotate(-90deg)">▼</span></button>
+    <div id="panel-body" class="collapsed">
+    <h4>Bathymetry Opacity</h4>
+    <div id="opacity-row">
+      <input type="range" id="opacity-slider" min="0" max="100" value="100">
+      <span id="opacity-val">100%</span>
+    </div>
+    <div id="kml-panel">
+      <h4>KML Overlays</h4>
+      <div id="kml-list"></div>
+    </div>
+    </div>  <!-- panel-body -->
+  </div>
+</div>
+<div id="glider-readouts">
+  <div id="refresh-time"></div>
+</div>
+<div id="battery-plots"></div>
+<div id="ssh-plot">
+  <a href="https://cproof.uvic.ca/gliderdata/deployments/sshplots/imgs/CurrentSSH.png" target="_blank">
+    <img src="https://cproof.uvic.ca/gliderdata/deployments/sshplots/imgs/CurrentSSH.png" alt="Current SSH">
+  </a>
+  <a href="https://cproof.uvic.ca/gliderdata/deployments/sshplotsnew/" target="_blank" class="hist-link">Historical SSH plots</a>
+</div>
+
+<script>
+  // ── Map setup ────────────────────────────────────────────────────────────
+  const map = L.map('map');
+
+  // Minimum opening extent: viewport can show more depending on aspect ratio,
+  // but will always include at least this geographic box.
+  const MIN_OPEN_BOUNDS = L.latLngBounds(
+    [46.65, -136.5],  // south-west [lat, lon]
+    [52.72, -123.0]   // north-east [lat, lon]
+  );
+  map.fitBounds(MIN_OPEN_BOUNDS, { animate: false, padding: [10, 10] });
+
+  // Base layers
+  const baseLayers = {
+    'Dark': L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      { attribution: '&copy; CartoDB', maxZoom: 19, subdomains: 'abcd' }
+    ),
+    'Light Gray': L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      { attribution: '&copy; Esri', maxZoom: 16 }
+    ),
+    'Topographic': L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      { attribution: '&copy; Esri', maxZoom: 16 }
+    ),
+    'Esri Ocean': L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+      { attribution: '&copy; Esri', maxZoom: 13 }
+    ),
+    'OpenStreetMap': L.tileLayer(
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }
+    )
+  };
+  baseLayers['Dark'].addTo(map);
+
+  // BCCOG WMS bathymetry layer
+  const bccog = L.tileLayer.wms('https://cproof.uvic.ca/wms/BCCOG', {
+    layers: 'BCBathy',
+    format: 'image/png',
+    transparent: true,
+    version: '1.3.0',
+    attribution: 'CPROOF / UVic',
+    opacity: 1.0
+  });
+  bccog.addTo(map);
+
+  // Layer switcher — topleft so it doesn't collide with our panel
+  const overlays = { 'BC Bathymetry': bccog };
+  L.control.layers(baseLayers, overlays, { position: 'topleft' }).addTo(map);
+
+  // ── Opacity control ───────────────────────────────────────────────────────
+  const slider  = document.getElementById('opacity-slider');
+  const opLabel = document.getElementById('opacity-val');
+  slider.addEventListener('input', () => {
+    bccog.setOpacity(slider.value / 100);
+    opLabel.textContent = slider.value + '%';
+  });
+
+  const _now = new Date();
+  document.getElementById('refresh-time').textContent =
+    'Last refreshed: ' + _now.toUTCString().replace(' GMT', ' UTC') +
+    '  (' + _now.toLocaleString() + ' local)';
+
+  // ── Survey lines ─────────────────────────────────────────────────────────
+  const LINE_VOCAB_URL = 'https://cproof.uvic.ca/observatory/cproof_line_vocab.yml';
+  map.createPane('surveyLines');
+  map.getPane('surveyLines').style.zIndex = 350;  // below overlayPane (400) where KMLs land
+
+  const LINE_STYLE = { color: '#888', weight: 1.5, opacity: 0.6, dashArray: '4 4', pane: 'surveyLines' };
+
+  fetch(LINE_VOCAB_URL)
+    .then(r => r.ok ? r.text() : Promise.reject(r.status))
+    .then(text => {
+      const vocab = jsyaml.load(text);
+      const LABEL_STATIONS = new Set(['QCS01', 'P4', 'P8', 'P16', 'P20', 'P26', 'S4']);
+      const SKIP_LINES     = new Set();
+      const seen = {};  // deduplicate stations across lines
+
+      // Structure: { lines: { LineName: { long_name, waypoints: [{station, lat, lon}, ...] } } }
+      Object.entries(vocab.lines).forEach(([key, line]) => {
+        if (SKIP_LINES.has(key)) return;
+        const latlngs = line.waypoints.map(w => [w.lat, w.lon]);
+        const label   = line.long_name || key;
+        L.polyline(latlngs, LINE_STYLE)
+          .bindTooltip(label, { sticky: true, opacity: 0.8 })
+          .addTo(map);
+
+        line.waypoints.forEach(w => {
+          if (LABEL_STATIONS.has(w.station) && !seen[w.station]) {
+            seen[w.station] = true;
+            L.circleMarker([w.lat, w.lon], {
+              radius: 3, color: '#555', fillColor: '#fff', fillOpacity: 1, weight: 1.5,
+              pane: 'surveyLines'
+            })
+            .bindTooltip(w.station, { permanent: true, direction: 'right', offset: [6, 0],
+              className: 'station-label' })
+            .addTo(map);
+          }
+        });
+      });
+    })
+    .catch(e => console.warn('Could not load line vocab:', e));
+
+  function toUtcDate(isoStr) {
+    if (!isoStr) return null;
+    return new Date(isoStr.endsWith('Z') || isoStr.includes('+') ? isoStr : isoStr + 'Z');
+  }
+
+  function elapsedHHMM(isoStr) {
+    const ms = Date.now() - toUtcDate(isoStr);
+    const h  = Math.floor(ms / 3600000);
+    const m  = Math.floor((ms % 3600000) / 60000);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+
+  function hoursToHHMM(h) {
+    const totalMin = Math.round(h * 60);
+    return `${String(Math.floor(totalMin / 60)).padStart(2,'0')}:${String(totalMin % 60).padStart(2,'0')}`;
+  }
+
+  function elapsedDHHMM(isoStr) {
+    const ms = Date.now() - toUtcDate(isoStr);
+    const d  = Math.floor(ms / 86400000);
+    const h  = Math.floor((ms % 86400000) / 3600000);
+    const m  = Math.floor((ms % 3600000) / 60000);
+    return `${d} d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+
+  function surfacingElapsedColor(lastSurfaceIso, recentIntervalsH) {
+    if (!lastSurfaceIso || !Array.isArray(recentIntervalsH) || recentIntervalsH.length === 0) return null;
+
+    const surfaceTime = toUtcDate(lastSurfaceIso);
+    if (!surfaceTime || Number.isNaN(surfaceTime.getTime())) return null;
+
+    const latestIntervalH = recentIntervalsH[recentIntervalsH.length - 1];
+    if (!Number.isFinite(latestIntervalH) || latestIntervalH <= 0) return null;
+
+    const elapsedH = (Date.now() - surfaceTime.getTime()) / 3600000;
+    if (elapsedH > 2.2 * latestIntervalH) return '#ff4d4d';
+    if (elapsedH > 1.2 * latestIntervalH) return '#ff9800';
+    return null;
+  }
+
+  // ── Ops-log status/plan panel (echoes ops_log.html's status box) ──────────
+  // public_status.py, not logs_api.py: a separate, no-auth, read-only
+  // endpoint, so this panel doesn't need the ops log's login. See
+  // public_status.py and ops_log_apache.conf.
+  const PUBLIC_STATUS_API = 'cgi-bin/public_status.py';
+
+  // command_state.html's glider param uses the Slocum dockserver's own
+  // naming ("hal_1002": serial with an underscore before the digits, no org
+  // prefix), which differs from the deployment glider name used everywhere
+  // else on this page ("dfo-hal1002": org prefix + serial run together).
+  // Same physical glider, two naming conventions -- translate here.
+  function commandStateGliderName(deploymentGlider) {
+    const noPrefix = deploymentGlider.replace(/^[a-z]+-/i, '');
+    const m = noPrefix.match(/^([a-zA-Z]+)(\d+)$/);
+    return m ? `${m[1]}_${m[2]}` : noPrefix;
+  }
+
+  function createPlanPanel(glider, mission, color) {
+    const panel = document.createElement('div');
+    panel.className = 'glider-plan';
+    panel.style.borderLeftColor = color;
+    panel.innerHTML =
+      `<div class="plan-label"><span>Status / plan</span><a href="ops_log.html" target="_blank">edit →</a></div>` +
+      `<div class="plan-text plan-empty">Loading…</div>`;
+
+    fetch(`${PUBLIC_STATUS_API}?action=get_status&glider=${encodeURIComponent(glider)}&mission=${encodeURIComponent(mission)}`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => {
+        const text = (data.text || '').trim();
+        const textEl = panel.querySelector('.plan-text');
+        if (text) {
+          textEl.textContent = text;
+          textEl.classList.remove('plan-empty');
+        } else {
+          textEl.textContent = 'No plan set.';
+        }
+      })
+      .catch(() => {
+        // ops log API not reachable/deployed here -- don't clutter the page
+        panel.style.display = 'none';
+      });
+
+    return panel;
+  }
+
+  function slocumReadout(glider, name, color, p) {
+    const nowStr      = new Date().toISOString().slice(0,19).replace('T',' ') + ' UTC';
+    const surfStr     = p.last_surface_time?.slice(0,19) ?? '—';
+    const elapsed     = p.last_surface_time ? elapsedHHMM(p.last_surface_time) : '—';
+    const because     = (p.because   ?? '').replace(/^Because:/i, '').trim();
+    const devLine     = (p.devices   ?? '').replace(/^devices:\(t\/m\/s\)\s*/i, '').trim();
+    const abortCause  = (p.lastabort ?? '').replace(/^ABORT HISTORY: last abort cause:\s*/i, '').trim();
+    const abortDetail = (p.lastabortdetails ?? '').replace(/^ABORT HISTORY: last abort details:\s*/i, '').trim();
+    const abortElap   = p.lastaborttime ? elapsedDHHMM(p.lastaborttime) : '—';
+    const abortTime   = p.lastaborttime?.slice(0,19) ?? '—';
+    const speedMs     = ((p.speedmadegood ?? 0) / 86.4).toFixed(2);
+    const intervalsArr = (p.recent_surface_intervals_h ?? []).slice().reverse();
+    const intervals   = intervalsArr.map(hoursToHHMM).join('  ');
+    const elapsedColor = surfacingElapsedColor(p.last_surface_time, p.recent_surface_intervals_h ?? []);
+    const elapsedDisplay = elapsedColor
+      ? `<span style="color:${elapsedColor};font-weight:700">${elapsed}</span>`
+      : elapsed;
+
+    const missionUrl = `${BASE_URL}/${glider}/${name}/`;
+    const recentAbort = p.lastaborttime && (Date.now() - toUtcDate(p.lastaborttime)) < 86400000;
+    const toolong     = p.toolong ?? 0;
+    const alert       = !because.toLowerCase().includes('pitch not commanded') || recentAbort || toolong > 1;
+
+    const row = document.createElement('div');
+    row.className = 'glider-row';
+    document.getElementById('glider-readouts').appendChild(row);
+
+    const div = document.createElement('div');
+    div.className = 'glider-readout';
+    div.style.borderLeftColor = color;
+    if (alert) div.classList.add('glider-alert');
+    row.appendChild(div);
+    div.innerHTML =
+`<b><a href="${missionUrl}" target="_blank" style="color:inherit">${name}</a></b>  <a href="https://cproof.uvic.ca/mapserver/command_state.html?glider=${encodeURIComponent(commandStateGliderName(glider))}" target="_blank" style="font-size:11px;color:var(--text-muted)">cmd state →</a>
+  ${elapsedDisplay} since last surfacing ${surfStr}    (now=${nowStr})
+    ${because}
+${(p.amph_last ?? 0).toFixed(1)} AmpH  ${(p.volts ?? 0).toFixed(1)} volts  (${(p.relcharge ?? 0).toFixed(1)}%)  approx  ${(p.dampdd ?? 0).toFixed(2)} AmpH/d
+${devLine}
+${p.missionname ?? '—'} num ${p.missionnum ?? '—'}
+Speed made good to next wp: ${(p.speedmadegood ?? 0).toFixed(2)} km/day ( ${speedMs} m/s)  Altimeter: ${p.altimeter_on ? '<span style="color:#00c000">ON</span>' : '<span style="color:#ff8800">off</span>'}
+Recent surface intervals (latest→oldest): ${intervals || '—'}
+${recentAbort
+  ? `<span style="color:var(--alert-text)">RECENT ABORT: ${abortElap} ago:  ${abortTime}  last abort num ${p.abortmissionnum ?? '—'}: ${abortCause}
+abort details: ${abortDetail}</span>`
+  : `<span style="color:#777">    last abort: ${abortElap} ago:  ${abortTime}  last abort num ${p.abortmissionnum ?? '—'}: ${abortCause}
+           abort details: ${abortDetail}</span>`}${toolong > 0 ? `\nPOSSIBLE GIBBERISH: "xxx_ctrl() ran too long" printed ${toolong} times` : ''}`;
+
+    row.appendChild(createPlanPanel(glider, name, color));
+  }
+
+  function loadSeaexplorer(glider, name, color, data) {
+    const p     = data.properties;
+    const group = L.layerGroup().addTo(map);
+    deploymentLayerGroups.push(group);
+    const feat  = id => data.features.find(f => f.id === id);
+
+    // Track line + surfacing dots
+    const trackFeat = feat('track');
+    if (trackFeat) {
+      // Draw track line
+      L.geoJSON(trackFeat, {
+        style: () => ({ color, weight: 1.5, opacity: 0.8 })
+      }).addTo(group);
+
+      // Surfacing dots: one dot per surfacing event, last 10 events
+      const rawCoords = trackFeat.geometry.type === 'MultiLineString'
+        ? trackFeat.geometry.coordinates.flat(1)
+        : trackFeat.geometry.coordinates;
+      const times = trackFeat.properties?.times_utc;
+      let dotCoords = [];
+      if (times && times.length === rawCoords.length) {
+        // Group GPS fixes into surfacing events: new event when gap > 5 minutes
+        // times may be ISO strings (seaexplorer) or nanoseconds since epoch (slocum)
+        const toMs = t => typeof t === 'string' ? new Date(t).getTime() : t / 1e6;
+        const GAP_MS = 5 * 60 * 1000;
+        let groupStart = 0;
+        for (let i = 1; i <= times.length; i++) {
+          const isLast = i === times.length;
+          const bigGap = !isLast && (toMs(times[i]) - toMs(times[i - 1])) > GAP_MS;
+          if (bigGap || isLast) {
+            dotCoords.push(rawCoords[groupStart]);
+            groupStart = i;
+          }
+        }
+      }
+      // Fall back to position dedup if times approach yielded nothing
+      if (dotCoords.length === 0) {
+        dotCoords = rawCoords.filter(([lon, lat], i) => {
+          if (i === 0) return true;
+          const [plon, plat] = rawCoords[i - 1];
+          return lon !== plon || lat !== plat;
+        });
+      }
+      dotCoords.slice(-10).forEach(([lon, lat]) => {
+        L.circleMarker([lat, lon], {
+          radius: 2, color, weight: 1, fillColor: color, fillOpacity: 0.6
+        }).addTo(group);
+      });
+    }
+
+    // Current position marker + popup
+    const curFeat = feat('current_position');
+    if (curFeat) {
+      const [lon, lat] = curFeat.geometry.coordinates;
+      const curLL = [lat, lon];
+
+      // Last surface time = last entry in track times_utc
+      const times = trackFeat?.properties?.times_utc;
+      const lastTime = times?.length
+        ? new Date(times[times.length - 1]).toUTCString().replace(' GMT', '') + ' UTC'
+        : '—';
+
+      const popup = `
+        <b>${name}</b><br>
+        <hr style="margin:4px 0">
+        Last surface: ${lastTime}<br>
+        Battery: ${p.current_battery?.toFixed(1)} V<br>
+        Speed (24h): ${p.speed_last_24h_km_day?.toFixed(1)} km/day<br>
+        Heading command: ${p.heading_command?.toFixed(0)}°
+      `;
+      L.circleMarker(curLL, {
+        radius: 4, color, weight: 2, fillColor: color, fillOpacity: 0.95
+      }).bindPopup(popup).addTo(group);
+
+      // Dead-reckoning line: use heading_command directly (already a compass bearing)
+      if (p.heading_command != null && p.speed_last_24h_km_day) {
+        const tip = destPoint(curLL, p.heading_command, p.speed_last_24h_km_day * 2);
+        L.polyline([curLL, tip], { color: '#00c000', weight: 2, opacity: 0.9 })
+          .bindTooltip(`~${p.speed_last_24h_km_day.toFixed(0)} km/day (2-day range)`, { sticky: true })
+          .addTo(group);
+      }
+    }
+
+    seaexplorerReadout(glider, name, color, data);
+    addBatteryPlot(name, `${BASE_URL}/${glider}/${name}/figs/Battery.png`, color);
+    addDeploymentToPanel(name, color, group);
+  }
+
+  function seaexplorerReadout(glider, name, color, data) {
+    const p      = data.properties;
+    const track  = data.features?.find(f => f.id === 'track');
+    const times  = track?.properties?.times_utc ?? [];
+    const lastIso = times.length ? times[times.length - 1] : null;
+    const nowStr  = new Date().toISOString().slice(0,19).replace('T',' ') + ' UTC';
+    const surfStr = lastIso ? lastIso.slice(0,19) : '—';
+    const elapsed = lastIso ? elapsedHHMM(lastIso) : '—';
+    const speedMs   = (p.speed_last_24h_m_s ?? 0).toFixed(2);
+    const intervals = (p.recent_surface_intervals_h ?? []).slice().reverse().map(hoursToHHMM).join('  ');
+    const elapsedColor = surfacingElapsedColor(lastIso, p.recent_surface_intervals_h ?? []);
+    const elapsedDisplay = elapsedColor
+      ? `<span style="color:${elapsedColor};font-weight:700">${elapsed}</span>`
+      : elapsed;
+    const missionUrl = `${BASE_URL}/${glider}/${name}/`;
+
+    const row = document.createElement('div');
+    row.className = 'glider-row';
+    document.getElementById('glider-readouts').appendChild(row);
+
+    const div = document.createElement('div');
+    div.className = 'glider-readout';
+    div.style.borderLeftColor = color;
+    row.appendChild(div);
+    div.innerHTML =
+`<b><a href="${missionUrl}" target="_blank" style="color:inherit">${name}</a></b>  <a href="https://cproof.uvic.ca/mapserver/command_state.html?glider=${encodeURIComponent(commandStateGliderName(glider))}" target="_blank" style="font-size:11px;color:var(--text-muted)">cmd state →</a>
+  ${elapsedDisplay} since last surfacing ${surfStr}    (now=${nowStr})
+Battery: ${(p.current_battery ?? 0).toFixed(1)} V
+Speed (last ${(p.speed_window_hours ?? 0).toFixed(1)}h, ${p.speed_points_used ?? '—'} pts): ${(p.speed_last_24h_km_day ?? 0).toFixed(2)} km/day ( ${speedMs} m/s)
+Heading command: ${(p.heading_command ?? 0).toFixed(0)}°  Altimeter: ${p.current_al > 0 ? `<span style="color:#00c000">${p.current_al.toFixed(1)} m</span>` : '<span style="color:#ff8800">off</span>'}
+Recent surface intervals (latest→oldest): ${intervals || '—'}
+${p.n_surfacings ?? '—'} surfacings`;
+
+    row.appendChild(createPlanPanel(glider, name, color));
+  }
+
+  // ── Deployment loading ────────────────────────────────────────────────────
+  const BASE_URL   = 'https://cproof.uvic.ca/gliderdata/deployments';
+  const ACTIVE_TXT = BASE_URL + '/active_deployments.txt';
+
+  const COLORS = [
+    '#e74c3c',  // red
+    '#1f5a2a',  // green
+    '#f39c12',  // amber
+    '#9b59b6',  // purple
+    '#e67e22',  // orange
+    '#e91e63',  // pink
+    '#8bc34a',  // lime
+    '#f06292',  // rose
+    '#ff7043',  // deep orange
+    '#ab47bc',  // violet
+  ];
+
+  const kmlListEl = document.getElementById('kml-list');
+
+  function addBatteryPlot(name, imgUrl, color) {
+    const wrap = document.createElement('div');
+    wrap.className = 'battery-plot';
+    wrap.style.borderLeft = `4px solid ${color}`;
+    const ts = '?t=' + Date.now();
+    wrap.innerHTML = `<span>${name}</span>
+      <a href="${imgUrl}" target="_blank">
+        <img src="${imgUrl}${ts}" alt="Battery ${name}" onerror="this.parentElement.parentElement.style.display='none'">
+      </a>`;
+    document.getElementById('battery-plots').appendChild(wrap);
+  }
+
+  function addDeploymentToPanel(name, color, layer) {
+    const id = 'dep-cb-' + name.replace(/\W+/g, '-');
+    const item = document.createElement('div');
+    item.className = 'kml-item';
+    item.innerHTML = `
+      <input type="checkbox" id="${id}" checked>
+      <span class="kml-swatch" style="background:${color}"></span>
+      <label for="${id}" title="${name}">${name}</label>
+    `;
+    item.querySelector('input').addEventListener('change', function() {
+      this.checked ? layer.addTo(map) : map.removeLayer(layer);
+    });
+    kmlListEl.appendChild(item);
+  }
+
+  // Returns [lat, lon] reached by travelling `distKm` from [lat,lon] on `bearingDeg`
+  function destPoint([lat, lon], bearingDeg, distKm) {
+    const R = 6371;
+    const d = distKm / R;
+    const b = bearingDeg * Math.PI / 180;
+    const φ1 = lat * Math.PI / 180;
+    const λ1 = lon * Math.PI / 180;
+    const φ2 = Math.asin(Math.sin(φ1)*Math.cos(d) + Math.cos(φ1)*Math.sin(d)*Math.cos(b));
+    const λ2 = λ1 + Math.atan2(Math.sin(b)*Math.sin(d)*Math.cos(φ1), Math.cos(d) - Math.sin(φ1)*Math.sin(φ2));
+    return [φ2 * 180 / Math.PI, λ2 * 180 / Math.PI];
+  }
+
+  function bearing([lat1, lon1], [lat2, lon2]) {
+    const φ1 = lat1 * Math.PI / 180, φ2 = lat2 * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    return Math.atan2(Math.sin(Δλ)*Math.cos(φ2),
+      Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ)) * 180 / Math.PI;
+  }
+
+  function loadSlocum(glider, name, color, data) {
+    const p    = data.properties;  // top-level status fields
+    const group = L.layerGroup().addTo(map);
+    deploymentLayerGroups.push(group);
+
+    // Helper to find a feature by id
+    const feat = id => data.features.find(f => f.id === id);
+
+    // Track line + surfacing dots
+    const trackFeat = feat('track');
+    if (trackFeat) {
+      // Draw track line
+      L.geoJSON(trackFeat, {
+        style: () => ({ color, weight: 1.5, opacity: 0.8 })
+      }).addTo(group);
+
+      // Surfacing dots: one dot per surfacing event, last 10 events
+      const rawCoords = trackFeat.geometry.type === 'MultiLineString'
+        ? trackFeat.geometry.coordinates.flat(1)
+        : trackFeat.geometry.coordinates;
+      const times = trackFeat.properties?.times_utc;
+      let dotCoords = [];
+      if (times && times.length === rawCoords.length) {
+        // Group GPS fixes into surfacing events: new event when gap > 5 minutes
+        // times may be ISO strings (seaexplorer) or nanoseconds since epoch (slocum)
+        const toMs = t => typeof t === 'string' ? new Date(t).getTime() : t / 1e6;
+        const GAP_MS = 5 * 60 * 1000;
+        let groupStart = 0;
+        for (let i = 1; i <= times.length; i++) {
+          const isLast = i === times.length;
+          const bigGap = !isLast && (toMs(times[i]) - toMs(times[i - 1])) > GAP_MS;
+          if (bigGap || isLast) {
+            dotCoords.push(rawCoords[groupStart]);
+            groupStart = i;
+          }
+        }
+      }
+      // Fall back to position dedup if times approach yielded nothing
+      if (dotCoords.length === 0) {
+        dotCoords = rawCoords.filter(([lon, lat], i) => {
+          if (i === 0) return true;
+          const [plon, plat] = rawCoords[i - 1];
+          return lon !== plon || lat !== plat;
+        });
+      }
+      dotCoords.slice(-10).forEach(([lon, lat]) => {
+        L.circleMarker([lat, lon], {
+          radius: 2, color, weight: 1, fillColor: color, fillOpacity: 0.6
+        }).addTo(group);
+      });
+    }
+
+    // Dashed line: last_waypoint → current_position → next_waypoint
+    const cur  = feat('current_position')?.geometry.coordinates;
+    const last = feat('last_waypoint')?.geometry.coordinates;
+    const next = feat('next_waypoint')?.geometry.coordinates;
+    if (cur && last && next) {
+      L.polyline(
+        [[last[1], last[0]], [cur[1], cur[0]], [next[1], next[0]]],
+        { color, weight: 1.5, opacity: 0.7, dashArray: '6 6' }
+      ).addTo(group);
+    }
+
+    // Last waypoint — small grey open circle (where it came from)
+    const lastFeat = feat('last_waypoint');
+    if (lastFeat) {
+      const [lon, lat] = lastFeat.geometry.coordinates;
+      L.circleMarker([lat, lon], {
+        radius: 4, color: '#888', weight: 1.5, fillColor: '#fff', fillOpacity: 0.8
+      }).bindTooltip('last waypoint', { sticky: true, opacity: 0.8 }).addTo(group);
+    }
+
+    // Next waypoint — diamond marker in glider color
+    const nextFeat = feat('next_waypoint');
+    if (nextFeat) {
+      const [lon, lat] = nextFeat.geometry.coordinates;
+      const diamond = L.divIcon({
+        className: '',
+        html: `<div style="width:10px;height:10px;background:${color};opacity:0.85;
+                     border:1.5px solid #fff;transform:rotate(45deg)"></div>`,
+        iconSize: [10, 10],
+        iconAnchor: [5, 5]
+      });
+      L.marker([lat, lon], { icon: diamond })
+        .bindTooltip('next waypoint', { sticky: true, opacity: 0.8 })
+        .addTo(group);
+    }
+
+    // Current position — bold filled marker with status popup
+    if (cur) {
+      const surfTime = p.last_surface_time
+        ? new Date(p.last_surface_time + 'Z').toUTCString().replace(' GMT','') + ' UTC'
+        : '—';
+      const popup = `
+        <b>${name}</b><br>
+        <i>${p.missionname || ''} &nbsp;#${p.missionnum || ''}</i><br>
+        <hr style="margin:4px 0">
+        Last surface: ${surfTime}<br>
+        Battery: ${p.relcharge?.toFixed(1)}% &nbsp;/&nbsp; ${p.volts?.toFixed(2)} V<br>
+        Speed made good: ${p.speedmadegood?.toFixed(1)} km/day<br>
+        ${p.because ? '<br><small>' + p.because.replace('Because:','').trim() + '</small>' : ''}
+      `;
+      L.circleMarker([cur[1], cur[0]], {
+        radius: 4, color, weight: 2, fillColor: color, fillOpacity: 0.95
+      }).bindPopup(popup).addTo(group);
+    }
+
+    // Dead-reckoning line drawn last so it sits on top of everything
+    if (cur && next && p.speedmadegood) {
+      const curLL  = [cur[1], cur[0]];
+      const nextLL = [next[1], next[0]];
+      const hdg    = bearing(curLL, nextLL);
+      const tip = destPoint(curLL, hdg, p.speedmadegood * 2);
+      L.polyline([curLL, tip], { color: '#00c000', weight: 2, opacity: 0.9 })
+        .bindTooltip(`~${p.speedmadegood.toFixed(0)} km/day (2-day range)`, { sticky: true }).addTo(group);
+    }
+
+    slocumReadout(glider, name, color, p);
+    addBatteryPlot(name, `${BASE_URL}/${glider}/${name}/figs/battery_${name}.png`, color);
+    addDeploymentToPanel(name, color, group);
+  }
+
+  // Track deployment layer groups so they can be cleared on refresh
+  let deploymentLayerGroups = [];
+
+  function loadDeployments() {
+    // Remove old deployment layers from map
+    deploymentLayerGroups.forEach(g => g.remove());
+    deploymentLayerGroups = [];
+
+    // Clear readouts (preserve the refresh-time div)
+    const readoutsEl = document.getElementById('glider-readouts');
+    Array.from(readoutsEl.children).forEach(child => {
+      if (child.id !== 'refresh-time') child.remove();
+    });
+
+    // Clear KML list and battery plots
+    kmlListEl.innerHTML = '';
+    document.getElementById('battery-plots').innerHTML = '';
+
+    // Update refresh timestamp
+    const now = new Date();
+    document.getElementById('refresh-time').textContent =
+      'Last refresh: ' + now.toISOString().slice(0,16).replace('T',' ') + ' UTC' +
+      '  (' + now.toLocaleDateString([], { weekday:'short', year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g,'-') +
+      ' ' + now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', hour12:false }) + ' local)';
+
+    // Cache-bust SSH image
+    const sshImg = document.querySelector('#ssh-plot img');
+    if (sshImg) {
+      const base = sshImg.src.split('?')[0];
+      sshImg.src = base + '?t=' + now.getTime();
+    }
+
+    // Fetch active_deployments.txt, then fetch all geojsons, then render sorted
+    fetch(ACTIVE_TXT)
+      .then(r => r.ok ? r.text() : '')
+      .catch(() => '')
+      .then(text => {
+        const deployments = text.trim().split('\n')
+          .map(l => l.trim()).filter(Boolean)
+          .map(line => {
+            const [glider, deployment] = line.split('/');
+            if (!glider || !deployment) return null;
+            const hash = [...glider].reduce((h, c) => Math.imul(31, h) + c.charCodeAt(0) | 0, 0);
+            return { glider, deployment, color: COLORS[Math.abs(hash) % COLORS.length] };
+          })
+          .filter(Boolean);
+
+        // Fetch all geojsons in parallel, render in original file order
+        Promise.all(deployments.map(({ glider, deployment, color }) => {
+          const geojsonUrl = `${BASE_URL}/${glider}/${deployment}/surfacinglog.geojson`;
+          return fetch(geojsonUrl)
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
+            .then(data => ({ glider, deployment, color, data }));
+        })).then(results => {
+          results.forEach(({ glider, deployment, color, data }) => {
+            if (!data) return;
+            const type = data.glidertype || data.features?.[0]?.properties?.glidertype;
+            if (type === 'slocum')      loadSlocum(glider, deployment, color, data);
+            if (type === 'seaexplorer') loadSeaexplorer(glider, deployment, color, data);
+          });
+
+          if (kmlListEl.children.length === 0)
+            kmlListEl.innerHTML = '<em style="color:#aaa;font-size:11px">No active deployments</em>';
+        });
+      });
+  }
+
+  loadDeployments();
+  setInterval(loadDeployments, 300000);
+  // ── Cursor lat/lon display ───────────────────────────────────────────────
+  const coordControl = L.control({ position: 'bottomleft' });
+  coordControl.onAdd = () => {
+    const div = L.DomUtil.create('div', 'leaflet-bar');
+    div.style.cssText = 'background:rgba(255,255,255,0.85);padding:2px 8px;font-size:12px;font-family:monospace;min-width:180px';
+    div.innerHTML = '— , —';
+    map.on('mousemove', e => {
+      div.innerHTML = `${e.latlng.lat.toFixed(4)}°N &nbsp; ${e.latlng.lng.toFixed(4)}°E`;
+    });
+    map.on('mouseout', () => { div.innerHTML = '— , —'; });
+    return div;
+  };
+  coordControl.addTo(map);
+
+  // ── Panel toggle ─────────────────────────────────────────────────────────
+  const panelToggle = document.getElementById('panel-toggle');
+  const panelBody   = document.getElementById('panel-body');
+  const panelArrow  = document.getElementById('panel-arrow');
+  panelToggle.addEventListener('click', () => {
+    const collapsed = panelBody.classList.toggle('collapsed');
+    panelArrow.style.transform = collapsed ? 'rotate(-90deg)' : '';
+  });
+
+  // ── Theme toggle ─────────────────────────────────────────────────────────
+  const themeBtn = document.getElementById('theme-toggle');
+
+  function isDark() {
+    const t = document.documentElement.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    themeBtn.textContent = dark ? '☀️ Light' : '🌙 Dark';
+    localStorage.setItem('bc-bathy-theme', dark ? 'dark' : 'light');
+  }
+
+  // Initialise: URL param (?theme=dark|light) > localStorage > browser setting
+  const urlTheme = new URLSearchParams(window.location.search).get('theme');
+  const saved = urlTheme || localStorage.getItem('bc-bathy-theme');
+  if (saved) {
+    applyTheme(saved === 'dark');
+  } else {
+    applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  themeBtn.addEventListener('click', () => applyTheme(!isDark()));
+
+  // Follow OS changes if user hasn't manually overridden
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (!localStorage.getItem('bc-bathy-theme')) applyTheme(e.matches);
+  });
+</script>
+
+</body>
+</html>

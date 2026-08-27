@@ -10,7 +10,7 @@ category: members
 
 <body class="people">
 	<h2>C-PROOF Investigators</h2>
-  
+
 <div class="row">
 	<div class="columnl" >
 	  <h2>Glider and Float Science Leads</h2>
@@ -18,7 +18,7 @@ category: members
 
   <img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
 
- 
+
   <h3>{{ member.name }}</h3>
   <p class="sl">
   {{ member.role }}
@@ -61,7 +61,7 @@ category: members
 	<p class="staf">
 {% else %}
 	<p>
-{% endif %}	
+{% endif %}
 	{{ member.role }}
 	</br>
 	{{member.title}}
@@ -91,18 +91,18 @@ category: members
 
 	<p></p>
 	</div>
-	<div class="columnr" >  
+	<div class="columnr" >
 	  <h2>Co-Investigators</h2>
 	  {% for member in site.data.members %} {% if member.type == "investigator" %}{% if member.visible == true %}
 
 	  <img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
- 
+
 	  <h3>{{ member.name }}</h3>
 	  <p class="sl">
- 
+
 	  {{ member.role }}
- 
- 
+
+
 	  </br>
 	  {% if member.org %}
 	  {{member.title}}, {{ member.org }}
@@ -124,11 +124,11 @@ category: members
 	  {% endif %}
 	</p>
   </p>
- 
+
 	  <hr>
- 
+
   {% endif %}{% endif %}{% endfor %}
-	 
+
 	  <p></p>
 	</div>
   </div>
@@ -145,10 +145,10 @@ category: members
 	<p class="staf">
 {% else %}
 	<p>
-{% endif %}	
+{% endif %}
 
 {% if member.role %}
-	{{ member.role }} 
+	{{ member.role }}
 		<br>
 {% endif %}
 	{{ member.title }}
@@ -170,15 +170,18 @@ category: members
 	<hr>
 {% endif %}{% endif %}{% endfor %}
 
-<h2> Students and Post-docs </h2>
+<h2> Current Students and Post-docs </h2>
 
-{% for member in site.data.students %} {% if member.visible == true %}
+{% assign current_postdocs = site.data.students | where: "visible", true | where: "status", "current" | where: "degree", "Postdoctoral" %}
+{% if current_postdocs.size > 0 %}
+<h3>Postdoctoral Scholars</h3>
+{% for member in current_postdocs %}
 
 	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
 
 	<h3>{{ member.name }}</h3>
 <p class="stu">
-	{{ member.role }}
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
 
 
 	</br>
@@ -204,7 +207,274 @@ category: members
 
 	<hr>
 <span>	</span>
-{% endif %}{% endfor %}
+{% endfor %}
+{% endif %}
+
+{% assign current_phds = site.data.students | where: "visible", true | where: "status", "current" | where: "degree", "PhD" %}
+{% if current_phds.size > 0 %}
+<h3>PhD Students</h3>
+{% for member in current_phds %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+
+
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
+
+{% assign current_mscs = site.data.students | where: "visible", true | where: "status", "current" | where: "degree", "MSc" %}
+{% if current_mscs.size > 0 %}
+<h3>MSc Students</h3>
+{% for member in current_mscs %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+
+
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
+
+{% assign current_bscs = site.data.students | where: "visible", true | where: "status", "current" | where: "degree", "BSc" %}
+{% if current_bscs.size > 0 %}
+<h3>BSc Students</h3>
+{% for member in current_bscs %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+
+
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
+
+<h2> Past Students and Post-docs </h2>
+
+{% assign past_postdocs = site.data.students | where: "visible", true | where: "status", "past" | where: "degree", "Postdoctoral" %}
+{% if past_postdocs.size > 0 %}
+<h3>Postdoctoral Scholars</h3>
+{% for member in past_postdocs %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+
+
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
+
+{% assign past_phds = site.data.students | where: "visible", true | where: "status", "past" | where: "degree", "PhD" %}
+{% if past_phds.size > 0 %}
+<h3>PhD Students</h3>
+{% for member in past_phds %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
+
+{% assign past_mscs = site.data.students | where: "visible", true | where: "status", "past" | where: "degree", "MSc" %}
+{% if past_mscs.size > 0 %}
+<h3>MSc Students</h3>
+{% for member in past_mscs %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+
+
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
+
+{% assign past_bscs = site.data.students | where: "visible", true | where: "status", "past" | where: "degree", "BSc" %}
+{% if past_bscs.size > 0 %}
+<h3>BSc Students</h3>
+{% for member in past_bscs %}
+
+	<img src="{{ member.img }}" style="margin-top:0px; margin-bottom:5px; margin-right:10px; float:left; width:150px !important">
+
+	<h3>{{ member.name }}</h3>
+<p class="stu">
+	{{ member.role }} ({{ member.years }}) - {{ member.institution }}
+
+
+	</br>
+	{% if member.org %}
+	{{member.title}}, {{ member.org }}
+	{% endif %}
+{% if member.url %}
+<br>
+<span class="social-share-googleplus"><a href="{{ member.url }}" title="Google Plus"><img src="{{ "/img/icons/url-icon.png"| prepend: site.baseurl }}" style="height:20px">Website</a></span>
+{% endif %}
+{% if member.github %}
+<span class="social-share-googleplus"><a href="https://github.com/{{ member.github }}" title="Github"><img src="{{ "/img/icons/github-icon.png" | prepend: site.baseurl }}" style="height:20px">Github</a></span>
+{% endif %}
+{% if member.gplus %}
+<span class="social-share-googleplus"><a href="{{ member.gplus }}" title="Google Plus"><img src="{{ "/img/icons/gplus-icon.png" | prepend: site.baseurl }}" style="height:20px">Google Plus</a></span>
+{% endif %}
+<br/>
+
+	{% if member.bio %}
+	{{ member.bio }}
+	{% endif %}
+</p>
+
+	<hr>
+<span>	</span>
+{% endfor %}
+{% endif %}
 
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -214,7 +484,7 @@ category: members
 
 <div class="row">
   <div class="column" style="background-color:rgb(250, 250, 250);">
-    
+
     <h4>Youyu Lu</h4>
 		Research Scientist, Department of Fisheries and Oceans Bedford Institute of Ocean Sciences
 	<h4>Angelica Pena</h4>
@@ -233,10 +503,10 @@ category: members
 		Professor, Director IESVic, University of Victoria Mechanical Engineering
 	<h4>Benoit Poullot</h4>
 		Environment and Climate Change Canada Environmental Numerical Weather Pred.
-	
+
   </div>
   <div class="column" >
-   
+
 	<h4>Katja Fennel</h4>
 		Professor Dalhousie University Department of Oceanography
 	<h4>Randy Riemann</h4>

@@ -7,4 +7,4 @@ gliderdata/
 vendor/bundle/ruby/3.1.0/
 vendor/ruby/
 vendor/bundle/ruby/3.2.0/
-cgi-bin/slack_webhooks.json
+cgi-bin/

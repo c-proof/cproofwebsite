@@ -2,24 +2,6 @@
 
 Based off https://projectpages.github.io.
 
-## Running jekyll:
-
-If you have bundler installed:
-
-```
-sudo bundle install
-```
-
-otherwise `sudo gem install bundler` first.
-
-To compile and run,
-
-```
-bundler exec jekyll serve &
-```
-
-will give you a local webserver.
-
 
 ## Installing and editing.
 
@@ -42,13 +24,10 @@ so we can sync with other people's changes as they are merged on the original.
 
 6. Push the changes to *your* remote:   `git push origin new-branch-name`
 
-7 git will now suggest that you can make a pull request to `c-proof`.  Do so and then it will get merged if all is OK
+7. Git will now suggest that you can make a pull request to `c-proof`.  Do so and then it will get merged if all is OK
+
+8. The change will be automatically deployed to the website using a github action.
 
 ## Socials:
 
-https://zapier.com/app/assets/zaps/folders/personal moves from blog posts to post to Facebook, Bluesky, and LinkedIn.
-
-- https://bsky.app/profile/cproof-uvic.bsky.social
-- https://www.linkedin.com/company/c-proof
-- https://www.facebook.com/cproofuvic
-
+These are a constant struggle to keep straight with any sort of automated relay.

@@ -1,5 +1,15 @@
 #inthenews
 
+- title: Nature of Things - Wild Wild Weather
+  subtitle: C-PROOF gliders, floats, and grad students are featured in this episode of the Nature of Things.
+  date: Nov 13, 2025
+  author: CBC Nature of Things
+  img:
+  url: https://www.youtube.com/watch?v=jN3aFXaTq90
+  type:
+  visible: true
+  visible2: true
+
 - title: Low ocean oxygen levels becoming more common off B.C.'s coast
   subtitle: New research shows patches of ocean off B.C.’s coast are facing levels of oxygen depletion that could start to impact marine wildlife.
   date: Sep 15, 2025

@@ -49,6 +49,7 @@ Finally, we recognize that learning and growth are ongoing. We acknowledge that 
         <h4 class="post-title">  {{ post.title }}
         </h4>
     </a>
+    {% if post.subtitle %}<p>{{ post.subtitle }}</p>{% endif %}
     <div class="post-meta">
       {% if post.date %}<span class="news-date">{{ post.date }}</span>{% endif %}
       {% if post.author %}<span class="news-author"> by {{ post.author }}</span>{% endif %}

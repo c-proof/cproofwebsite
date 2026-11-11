@@ -3,7 +3,7 @@ layout:     post
 title:      Congratulation Giuliana Berden on "Cuddie" paper
 author:     Jody Klymak
 tags: 		publication, paper
-subtitle:  	Segment on the oceans crucial role in regulating weather and climate.
+subtitle:  	Tracking the lifetime of a usually elusive sub-thermocline eddy.
 category:   news
 header-img: "img/ControlRoomMar19.jpg"
 image:      "/img/2026/BerdenEtAlFig1.png"

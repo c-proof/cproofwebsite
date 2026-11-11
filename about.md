@@ -65,6 +65,8 @@ If you use C-PROOF data, please cite: Klymak, J., & Ross, T. (2025). C-PROOF Und
 
 <div style="text-indent: -2em; padding-left: 2em;">
 
+<p>Berden, G., J. M. Klymak, T. Ross, G. Han, and L. Talbot, 2026: From Surface to Depth: SWOT Altimetry and Glider Observations of a Cuddy in the Northeast Pacific. <em>JGR Oceans</em>, 131, e2026JC024308, <a href="https://doi.org/10.1029/2026JC024308">doi:10.1029/2026JC024308</a></p>
+
 <p>G. Han, J. M. Klymak, T. Ross, and N. Chen, 2026: Validation of 1-day repeat SWOT measurements against tide-gauge and glider data off Canada's West Coast. <em>Geophy. Res. Lett.</em>, <a href="https://doi.org/10.1029/2025GL119491">doi:10.1029/2025GL119491</a></p>
 
 

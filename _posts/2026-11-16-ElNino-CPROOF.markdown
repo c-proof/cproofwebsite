@@ -23,9 +23,9 @@ C-PROOF is seeing the first signs of El Nino in our underwater autonomous glider
 </figure>
 
 
-[El Nino](https://en.wikipedia.org/wiki/El_Niño–Southern_Oscillation) is caused by a release of warm water in the western equatorial Pacific.  This warm water propagates along the equator to the west coast of the Americas, where it splits in two and heads both north and south as [coastally trapped waves](https://www.dillonamaya.com/home/ctw) (often termed "Kelvin waves").  These waves carry high sea level anomalies, and also can push warm water north along the BC coast.
+[El Nino](https://en.wikipedia.org/wiki/El_Niño–Southern_Oscillation) involves the eastward movement of warm water from the western equatorial Pacific toward the Americas. On reaching the coast, the oceanic signal propagates north and south as [coastally trapped waves](https://www.dillonamaya.com/home/ctw), often called Kelvin waves. These waves raise sea level and can carry warm water north along the BC coast. The equatorial water itself does not reach BC; instead, the waves displace coastal water northward by hundreds of kilometers, potentially bringing water from as far south as Northern California.
 
-[Satellite observations and numerical predictions](https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description) indicate that the start of El Nino was about 30 October on the BC coast.  The animation below is from GLORYS-12 a model that uses observations to predict the ocean in realtime.  You can clearly see the propagation of high water starting around 30 Oct, and moving north.  The sea-surface temperature at 200 m also shows water being pushed north along the wave.
+[Satellite observations and numerical predictions](https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030/description) indicate that the start of El Nino was about 30 October on the BC coast.  The animation below is from GLORYS-12 a model that uses observations to predict the ocean in realtime.  You can clearly see the propagation of high water starting around 30 Oct, and moving north.  The subsurface temperature at 200 m also shows water being pushed north along the wave.
 
 <video controls width="800">
   <source src="/img/2026/ElNino26SSHT200.mp4" type="video/mp4">

@@ -25,7 +25,7 @@ layout: default
 
 {% for post in site.posts %}
 
-	{% if post.title != page.title and post.author == page.author %}
+	{% if post.title != page.title and post.author == page.author and post.listed != false %}
 
 	<div class="float-left">
 	<div class="recentpost" style="padding: 10px">
@@ -75,9 +75,9 @@ layout: default
 
 	{% assign recentpost = post.title %}
 
-	{% endif %}
-
 	{% break %}
+
+	{% endif %}
 
 {% endfor %}
 
@@ -86,7 +86,7 @@ layout: default
 {% assign relevantpostcount = 0 %}
 {% for post in site.posts %}
 
-	{% if post.title != page.title and post.title != recentpost %}
+	{% if post.title != page.title and post.title != recentpost and post.listed != false %}
 	{% for tag in post.tags %}
 
 		{% if page.tags contains tag and relevantpostcount == 0 %}
@@ -160,12 +160,12 @@ layout: default
                 <hr>
 
                 <ul class="pager">
-                    {% if page.previous.url %}
+                    {% if page.previous.url and page.previous.listed != false %}
                     <li class="previous">
                         <a href="{{ page.previous.url | prepend: site.baseurl | replace: '//', '/' }}" data-toggle="tooltip" data-placement="top" title="{{page.previous.title}}">&larr; Previous Post</a>
                     </li>
                     {% endif %}
-                    {% if page.next.url %}
+                    {% if page.next.url and page.next.listed != false %}
                     <li class="next">
                         <a href="{{ page.next.url | prepend: site.baseurl | replace: '//', '/' }}" data-toggle="tooltip" data-placement="top" title="{{page.next.title}}">Next Post &rarr;</a>
                     </li>

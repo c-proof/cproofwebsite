@@ -11,3 +11,16 @@ $header-color: {{ site.headercolor }};
 hr.small {
   border-color: $header-color;
 }
+
+#content figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+#content figcaption {
+  margin-top: 0.5em;
+  color: #666;
+  font-size: 0.9em;
+  font-style: italic;
+  line-height: 1.4;
+}

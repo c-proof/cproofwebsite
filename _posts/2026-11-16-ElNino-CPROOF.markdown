@@ -70,6 +70,8 @@ Some of this data is preliminary and subject to revision.  However, the broad pa
 
 What do we expect to happen going forward?  El Nino is a large disturbance and should last for a few of months.  The sea surface height anomaly at the equator is still quite high, and the wave takes about 2 months to reach the coast of British Columbia.  It will be interesting to see the changes as El Nino continues, and then what happens with it relaxes.  Its important to note that these changes are not just caused by the Kelvin wave, but will be accompanied by changes in winds and weather systems that will further perturb the ocean and coastal conditions.
 
+We will be working with the west coast community, including other glider observatories to the south, to see how this event unfolds and affects coastal ocean conditions along the west coast of North America.
+
 ## Links:
 
 - [Dillon Amaya's Coastally Trapped Wave page](https://www.dillonamaya.com/home/ctw)

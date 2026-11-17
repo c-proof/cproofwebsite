@@ -28,6 +28,10 @@ so we can sync with other people's changes as they are merged on the original.
 
 8. The change will be automatically deployed to the website using a github action.
 
+## Unlisted posts
+
+To publish a post without linking it from the site's news lists, tag/search results, related-post lists, or RSS feed, add `listed: false` to its front matter. The post remains publicly accessible to anyone with its URL. `sitemap: false` also keeps it out of the sitemap. To list it later, change `listed` to `true` and remove `sitemap: false`.
+
 ## Socials:
 
 These are a constant struggle to keep straight with any sort of automated relay.

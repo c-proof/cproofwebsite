@@ -2,7 +2,8 @@
 layout: null
 ---
 {
-  {% for post in site.posts %}
+  {% assign listed_posts = site.posts | where_exp: "post", "post.listed != false" %}
+  {% for post in listed_posts %}
 
     "{{ post.url | slugify }}": {
       "title": "{{ post.title | xml_escape }}",

@@ -6,7 +6,7 @@ layout: page
 {{ content }}
 
 {% for post in site.posts %}
-{% if post.category == page.category %}
+{% if post.category == page.category and post.listed != false %}
 <div class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
         <h2 class="post-title">            {{ post.title }}

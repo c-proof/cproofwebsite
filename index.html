@@ -126,7 +126,9 @@ If you use C-PROOF data, please cite: <i>Klymak, J., & Ross, T. (2025). C-PROOF 
   </a>
 </h2>
 
-{% for post in paginator.posts offset:0 limit:4 %}   <!-- jpnote: added limit -->
+{% assign displayed_posts = 0 %}
+{% for post in paginator.posts %}
+{% if post.listed != false and displayed_posts < 4 %}
 <div class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
         <h4 class="post-title">            {{ post.title }}
@@ -141,6 +143,8 @@ If you use C-PROOF data, please cite: <i>Klymak, J., & Ross, T. (2025). C-PROOF 
 
 </div>
 <hr>
+{% assign displayed_posts = displayed_posts | plus: 1 %}
+{% endif %}
 {% endfor %}
 
 <!-- Pager -->

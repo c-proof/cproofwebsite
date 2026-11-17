@@ -14,10 +14,14 @@ listed:     false
 
 C-PROOF is seeing the first signs of El Nino in our underwater autonomous glider observations along the British Columbia coast, with temperatures as deep as 1000 m exceeding normal values.
 
+<figure>
 <img src="/img/2026/SouthernLineElNinoZoom.png"
      alt="Zoomed view of El Nino along the Southern Line"
      width="650"
      style="max-width: 100%; height: auto;">
+<figcaption>Temperature (colours) and density (contours) on the Southern Line offshore of southern Vancouver Island.  The large pulse of warm water next to the coast is indicative of the developing El Nino.</figcaption>
+</figure>
+
 
 [El Nino](https://en.wikipedia.org/wiki/El_Niño–Southern_Oscillation) is caused by a release of warm water in the western equatorial Pacific.  This warm water propagates along the equator to the west coast of the Americas, where it splits in two and heads both north and south as [coastally trapped waves](https://www.dillonamaya.com/home/ctw) (often termed "Kelvin waves").  These waves carry high sea level anomalies, and also can push warm water north along the BC coast.
 

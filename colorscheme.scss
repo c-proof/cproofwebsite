@@ -12,6 +12,10 @@ hr.small {
   border-color: $header-color;
 }
 
+.intro-header .post-heading .meta a {
+  color: inherit;
+}
+
 #content figure {
   margin: 1.5em 0;
   text-align: center;

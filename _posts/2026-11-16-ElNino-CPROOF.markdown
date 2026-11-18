@@ -38,17 +38,30 @@ C-PROOF is seeing the first signs of El Nino in our underwater autonomous glider
 
 C-PROOF underwater gliders have been observing these changes underwater, a crucial way to verify the model predictions, and to better understand the structure of the El Nino under water.  Data from our Southern Line show the very large changes.  The Aug and Sep data are relatively benign.  We can start to see evidence of the El Nino in the October 17 data, with surfaces of constant density (the contours) being pushed down almost 100 m.  This is the underwater response to the sea-level rising at the coast.  The next glider occupation (Nov 8) shows an even stronger response, with constant density being pushed down almost 200 m and warm water extending up the continental slope.
 
+An interesting feature is also seen offshore at about -60 km, where there is evidence of a bore of water pushed offshore as water is displaced by the El Nino signal along the coast.  The very sharp undulating interface is at this location indicates very energetic underwater waves, and probably mixing of the water carried by El Nino.  C-PROOF is following this feature closely with our gliders.
+
+<figure>
 <img src="/img/2026/SouthernLineElNino.png"
      alt="El Nino observed along the Southern Line; colors are temperature, and contours are potential density"
      width="400"
      style="max-width: 100%; height: auto;">
+<figcaption>
+Four passes approximately one month apart from our Southern Line, with colours representing temperature and contours representing potential density.
+</figcaption>
+</figure>
+
 
 Data from our Calvert Line also are perhaps showing the start if El Nino, with the constant density surfaces dipping down in the October 23 pass.  The glider `dfo-maria997` is on its way back to shore now and we are eagerly following what it sees over the next few days; [track Maria here](https://cproof.uvic.ca/gliderdata/deployments/dfo-maria997/dfo-maria997-20261016/).
 
+<figure>
 <img src="/img/2026/CalvertLineElNino.png"
      alt="El Nino observed along the Calvert Line; colors are temperature, and contours are potential density"
      width="400"
      style="max-width: 100%; height: auto;">
+<figcaption>
+Four passes approximately one month apart from our Calvert Line on the north end of Vancouver Island, with colours representing temperature and contours representing potential density.
+</figcaption>
+</figure>
 
 ## Is this really anomalous?
 
@@ -56,17 +69,27 @@ Of course a skeptical reader should ask if this data is really that anomalous?  
 
 Indeed these are the largest changes we have seen in the Southern Line since we started in Feb 2024.  Looking at previous Octobers, we see that this response is particularly strong compared to previous years.
 
+<figure>
 <img src="/img/2026/SouthernLineElNinoAnnual.png"
      alt="Southern Line observations over multiple years; colors are temperature, and contours are potential density"
      width="400"
      style="max-width: 100%; height: auto;">
+<figcaption>
+Southern Line observations over multiple years; colors are temperature, and contours are potential density.
+</figcaption>
+</figure>
 
-The water along a given constant density surface is also anomalously warm and salty, indicating that water has been brought from further south along the coast, consistent with the expected signature of an El Nino event.  We see this with what is called a "Hovmoller" diagram, which shows the evolution of temperature on the 200-m isopycnal over time.  We can see that the water on this density surface is over 1 degree warmer than normal and over 100 m deeper than normal (bottom plot).
+
+The water along a given constant density surface is also anomalously warm and salty, indicating that water has been brought from further south along the coast, consistent with the expected signature of an El Nino event.  We see this with what is called a "Hovmoller" diagram, which shows the evolution of temperature on the 200-m isopycnal over time.  We can see that the water on this density surface is over 1 degree warmer than normal and over 100 m deeper than normal (bottom plot).  Warmer means that the isopycnals is also saltier and water on it is almost certainly from further south.
 
 <img src="/img/2026/iso_hovmollerSouth200.png"
      alt="Hovmoller diagram of Southern Line; Top panel is temperature on the 26.6 degree isopycnal, and bottom panel is how deep the isopycnal is."
      width="400"
      style="max-width: 100%; height: auto;">
+<figcaption>
+Southern Line observations on a constant density surface typically found near 200 m depth. Top panel is temperature on the 26.6 degree isopycnal, and bottom panel is how deep the isopycnal is.  Note the last samples show the warming and deepening of this isopycnal.
+</figcaption>
+</figure>
 
 ## Conclusion and outlook
 

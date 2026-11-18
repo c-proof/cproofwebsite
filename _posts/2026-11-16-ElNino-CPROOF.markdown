@@ -81,6 +81,7 @@ Southern Line observations over multiple years; colors are temperature, and cont
 
 The water along a given constant density surface is also anomalously warm and salty, indicating that water has been brought from further south along the coast, consistent with the expected signature of an El Niño event.  We see this with what is called a "Hovmoller" diagram, which shows the evolution of temperature on the 200-m isopycnal over time.  We can see that the water on this density surface is over 1 degree warmer than normal and over 100 m deeper than normal (bottom plot).  Warmer means that the isopycnals is also saltier and water on it is almost certainly from further south.
 
+<figure>
 <img src="/img/2026/iso_hovmollerSouth200.png"
      alt="Hovmoller diagram of Southern Line; Top panel is temperature on the 26.6 degree isopycnal, and bottom panel is how deep the isopycnal is."
      width="400"

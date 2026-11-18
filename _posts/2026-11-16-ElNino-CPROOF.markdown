@@ -6,6 +6,7 @@ tags: 		El Niño, ocean gliders
 subtitle:  	Tracking the development of El Niño on the British Columbia coast.
 category:   news
 header-img: "img/2026/SouthernLineElNinoZoomZoom.png"
+header-text-color: "#222222"
 image:      "img/2026/SouthernLineElNinoZoom.png"
 sitemap:    true
 listed:     true

@@ -18,7 +18,7 @@ listed:     true
 <figure>
 <img src="/img/2026/SouthernLineElNinoZoom.png"
      alt="Zoomed view of El Niño along the Southern Line"
-     width="650"
+     width="950"
      style="max-width: 100%; height: auto;">
 <figcaption>Temperature (colours) and density (contours) on the Southern Line offshore of southern Vancouver Island.  The large pulse of warm water next to the coast is indicative of the developing El Niño.</figcaption>
 </figure>
@@ -106,6 +106,7 @@ We will be working with the west coast community, including other glider observa
 - [NOAA El Niño page](https://www.climate.gov/enso)
 - [DFO El Niño page](https://www.canada.ca/en/environment-climate-change/services/weather-general-tools-resources/el-nino.html)
 - [Ocean Networks Canada: Record high ocean temperatures off BC coast](https://www.oceannetworks.ca/news-and-stories/stories/record-high-ocean-temperatures-off-bc-coast/)
+  - [Steve Mihaly's unofficial El Niño page](https://sfmihaly.github.io/el-nino-2026/)
 
 ### C-PROOF and Ocean Gliders
 

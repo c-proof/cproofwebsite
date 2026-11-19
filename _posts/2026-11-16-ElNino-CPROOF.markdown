@@ -18,7 +18,7 @@ listed:     true
 <figure>
 <img src="/img/2026/SouthernLineElNinoZoom.png"
      alt="Zoomed view of El Niño along the Southern Line"
-     width="950"
+     width="700"
      style="max-width: 100%; height: auto;">
 <figcaption>Temperature (colours) and density (contours) on the Southern Line offshore of southern Vancouver Island.  The large pulse of warm water next to the coast is indicative of the developing El Niño.</figcaption>
 </figure>
@@ -44,7 +44,7 @@ An interesting feature is also seen offshore at about -60 km, where there is evi
 <figure>
 <img src="/img/2026/SouthernLineElNino.png"
      alt="El Niño observed along the Southern Line; colors are temperature, and contours are potential density"
-     width="400"
+     width="650"
      style="max-width: 100%; height: auto;">
 <figcaption>
 Four passes approximately one month apart from our Southern Line, with colours representing temperature and contours representing potential density.
